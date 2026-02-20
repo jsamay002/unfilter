@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* ============================================
+   Unfilter — Global Styles
+   Warm, approachable, teen-friendly aesthetic
+   ============================================ */
+
+/* Smooth scrolling + selection color */
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #c8d9c8;
+  color: #2f432f;
+}
+
+/* Base body */
+body {
+  background-color: #faf8f5;
+  color: #342d25;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle grain texture overlay on the whole app */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Card style utility */
+.card {
+  background: white;
+  border: 1px solid #e8e2d8;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(52, 45, 37, 0.04), 0 1px 2px rgba(52, 45, 37, 0.02);
+}
+
+/* Fade-in animation for step transitions */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.35s ease-out;
+}
+
+/* Pill button base */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+}
+
+.pill-inactive {
+  background: #f3f0ea;
+  color: #7d6e5f;
+  border-color: #e8e2d8;
+}
+
+.pill-inactive:hover {
+  background: #e8e2d8;
+}
+
+.pill-active {
+  background: #3a553a;
+  color: white;
+  border-color: #3a553a;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d5cbbe;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b8a99a;
+}
