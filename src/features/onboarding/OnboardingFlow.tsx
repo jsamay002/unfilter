@@ -11,6 +11,14 @@ import { Under13Step } from "./steps/Under13Step";
 import { PersonalizeStep } from "./steps/PersonalizeStep";
 import { TutorialStep } from "./steps/TutorialStep";
 
+const STEP_ORDER: OnboardingStep[] = [
+  "welcome",
+  "privacy",
+  "age-gate",
+  "personalize",
+  "tutorial",
+];
+
 export default function OnboardingFlow() {
   const router = useRouter();
   const [step, setStep] = useState<OnboardingStep>("welcome");
@@ -27,14 +35,53 @@ export default function OnboardingFlow() {
     router.push("/");
   };
 
-  return (
-    <div className="min-h-screen bg-sand-50 flex flex-col">
-      {/* Progress dots */}
-      {step !== "complete" && <ProgressDots current={step} />}
+  const currentIdx = STEP_ORDER.indexOf(step);
+  const showProgress = step !== "welcome" && step !== "complete";
 
-      {/* Content area */}
-      <div className="flex-1 flex items-center justify-center py-8">
-        <div className="w-full max-w-md">
+  return (
+    <div className="min-h-[100dvh] flex flex-col bg-[#faf8f4]">
+      {/* Progress bar */}
+      {showProgress && (
+        <div className="sticky top-0 z-50 bg-[#faf8f4]/80 backdrop-blur-md border-b border-[#eae5dd]/60">
+          <div className="max-w-lg mx-auto px-6 py-3 flex items-center gap-3">
+            {/* Logo */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#3d5a3d] shrink-0">
+              <span className="text-white text-[11px] font-bold" style={{ fontFamily: "Outfit" }}>U</span>
+            </div>
+
+            {/* Step bar */}
+            <div className="flex-1 flex gap-1.5">
+              {STEP_ORDER.slice(1).map((s, i) => {
+                const stepIdx = i + 1; // offset since we skip "welcome"
+                const isActive = stepIdx === currentIdx;
+                const isDone = stepIdx < currentIdx;
+                return (
+                  <div key={s} className="flex-1">
+                    <div
+                      className={`h-[3px] rounded-full transition-all duration-500 ${
+                        isDone
+                          ? "bg-[#3d5a3d]"
+                          : isActive
+                            ? "bg-[#7da37d]"
+                            : "bg-[#e0dbd3]"
+                      }`}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Step count */}
+            <p className="text-[11px] font-medium text-[#b0a697] tabular-nums shrink-0">
+              {Math.min(currentIdx, 4)}/4
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="flex-1 flex items-start justify-center">
+        <div className="w-full">
           {step === "welcome" && (
             <WelcomeStep onContinue={() => setStep("privacy")} />
           )}
@@ -43,7 +90,6 @@ export default function OnboardingFlow() {
             <PrivacyStep
               onAccept={() => setStep("age-gate")}
               onDecline={() => {
-                // Learn-only mode: skip photo features, go to finish
                 completeOnboarding();
                 router.push("/learn");
               }}
@@ -63,7 +109,6 @@ export default function OnboardingFlow() {
             />
           )}
 
-          {/* Under-13 redirect */}
           {step === "complete" && (
             <Under13Step
               onContinueLearnOnly={() => {
@@ -92,37 +137,6 @@ export default function OnboardingFlow() {
           {step === "tutorial" && <TutorialStep onFinish={finish} />}
         </div>
       </div>
-    </div>
-  );
-}
-
-/* ---- Progress dots ---- */
-
-const STEP_ORDER: OnboardingStep[] = [
-  "welcome",
-  "privacy",
-  "age-gate",
-  "personalize",
-  "tutorial",
-];
-
-function ProgressDots({ current }: { current: OnboardingStep }) {
-  const currentIdx = STEP_ORDER.indexOf(current);
-
-  return (
-    <div className="flex justify-center gap-2 pt-6 pb-2">
-      {STEP_ORDER.map((s, i) => (
-        <div
-          key={s}
-          className={`h-1.5 rounded-full transition-all duration-300 ${
-            i === currentIdx
-              ? "w-6 bg-sage-600"
-              : i < currentIdx
-                ? "w-1.5 bg-sage-300"
-                : "w-1.5 bg-sand-300"
-          }`}
-        />
-      ))}
     </div>
   );
 }

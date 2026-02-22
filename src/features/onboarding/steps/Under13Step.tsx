@@ -1,60 +1,61 @@
 "use client";
 
+import { ButtonPrimary, CalloutPanel, FeatureItem } from "@/components/ui";
+
 interface Under13StepProps {
   onContinueLearnOnly: () => void;
 }
 
 export function Under13Step({ onContinueLearnOnly }: Under13StepProps) {
   return (
-    <div className="px-2 animate-fade-up text-center">
-      <span className="text-4xl">🌱</span>
-      <h2 className="mt-4 font-display text-xl font-bold text-sand-900">
-        You&apos;re a bit young for photo check-ins
-      </h2>
-      <p className="mt-2 text-sm text-sand-500 max-w-xs mx-auto leading-relaxed">
-        That&apos;s totally okay! Photo-based check-ins require you to be 13 or
-        older, but there&apos;s still a lot you can do:
-      </p>
-
-      <div className="mt-6 space-y-2.5 max-w-xs mx-auto text-left">
-        <FeatureCard icon="📚" title="Learn Hub" desc="Understand your skin with myth-busting guides" />
-        <FeatureCard icon="✨" title="Confidence Mode" desc="Real-skin normalization and media literacy" />
-        <FeatureCard icon="🧴" title="Routine Basics" desc="Learn about gentle cleansing and moisturizing" />
-      </div>
-
-      <div className="mt-6 rounded-xl bg-sand-50 border border-sand-200 px-4 py-3 max-w-xs mx-auto">
-        <p className="text-xs text-sand-600 leading-relaxed">
-          💬 <strong>Tip:</strong> Ask a parent or guardian to help you
-          with any skin concerns — they can also use Unfilter&apos;s check-in
-          features on your behalf.
+    <div className="max-w-md mx-auto px-6 py-8">
+      {/* Header */}
+      <div className="mb-8 animate-fade-up">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fef5f3] mb-4">
+          <span className="text-[22px]">🌱</span>
+        </div>
+        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
+          Great — here&apos;s your experience
+        </h2>
+        <p className="text-[14px] text-[#8a7d6e] leading-relaxed max-w-sm">
+          Photo check-ins are available for ages 13+, but there&apos;s plenty
+          you can explore right now:
         </p>
       </div>
 
-      <button
-        onClick={onContinueLearnOnly}
-        className="mt-6 w-full max-w-xs rounded-2xl bg-sage-600 py-3.5 text-sm font-semibold text-white shadow-md shadow-sage-200 transition hover:bg-sage-700 active:scale-[0.98]"
-      >
-        Explore Learn-Only Mode
-      </button>
-    </div>
-  );
-}
+      {/* Available features */}
+      <div className="space-y-5 mb-8 animate-fade-up stagger-1">
+        <FeatureItem
+          icon="📚"
+          title="Learn Hub"
+          desc="Myth-busting guides, ingredient breakdowns, and skin science made simple"
+        />
+        <FeatureItem
+          icon="✨"
+          title="Confidence Mode"
+          desc="Real-skin normalization, media literacy, and anti-filter content"
+        />
+        <FeatureItem
+          icon="🧴"
+          title="Routine Basics"
+          desc="Learn about gentle cleansing, moisturizing, and sun protection"
+        />
+      </div>
 
-function FeatureCard({
-  icon,
-  title,
-  desc,
-}: {
-  icon: string;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <div className="card border border-sand-200 p-3.5 flex items-center gap-3">
-      <span className="text-lg">{icon}</span>
-      <div>
-        <p className="text-sm font-semibold text-sand-800">{title}</p>
-        <p className="text-xs text-sand-500">{desc}</p>
+      {/* Guardian note */}
+      <div className="mb-8 animate-fade-up stagger-2">
+        <CalloutPanel icon="💬" variant="warm">
+          <strong>Tip for parents:</strong> You can use Unfilter&apos;s full
+          features on behalf of your child. The app is designed for guided,
+          educational use.
+        </CalloutPanel>
+      </div>
+
+      {/* CTA */}
+      <div className="animate-fade-up stagger-3">
+        <ButtonPrimary onClick={onContinueLearnOnly} className="w-full">
+          Start exploring
+        </ButtonPrimary>
       </div>
     </div>
   );
