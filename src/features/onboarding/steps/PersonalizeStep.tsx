@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ButtonPrimary, ButtonText, SectionLabel } from "@/components/ui";
 import type { Goal, TimeBudget } from "../types";
 
 interface PersonalizeStepProps {
@@ -12,37 +13,17 @@ interface PersonalizeStepProps {
   onSkip: () => void;
 }
 
-const GOALS: { value: Goal; icon: string; label: string; desc: string }[] = [
-  {
-    value: "acne",
-    icon: "🔴",
-    label: "Breakouts / Acne",
-    desc: "Track and manage breakouts",
-  },
-  {
-    value: "irritation",
-    icon: "🩹",
-    label: "Irritation / Redness",
-    desc: "Calm and protect sensitive skin",
-  },
-  {
-    value: "routine",
-    icon: "🧴",
-    label: "Build a Routine",
-    desc: "Start or simplify a skincare routine",
-  },
-  {
-    value: "confidence",
-    icon: "✨",
-    label: "Skin Confidence",
-    desc: "Feel good about your real skin",
-  },
+const GOALS: { value: Goal; icon: string; label: string; color: string }[] = [
+  { value: "acne", icon: "🔴", label: "Breakouts", color: "border-l-[#d44a32]" },
+  { value: "irritation", icon: "🩹", label: "Irritation & redness", color: "border-l-[#e8b86d]" },
+  { value: "routine", icon: "🧴", label: "Build a routine", color: "border-l-[#7da37d]" },
+  { value: "confidence", icon: "✨", label: "Skin confidence", color: "border-l-[#8b7ec8]" },
 ];
 
-const TIME_OPTIONS: { value: TimeBudget; label: string }[] = [
-  { value: "2min", label: "2 min — Quick & simple" },
-  { value: "5min", label: "5 min — Balanced" },
-  { value: "10min", label: "10 min — Full routine" },
+const TIME_OPTIONS: { value: TimeBudget; label: string; sub: string }[] = [
+  { value: "2min", label: "2 min", sub: "Quick" },
+  { value: "5min", label: "5 min", sub: "Balanced" },
+  { value: "10min", label: "10 min", sub: "Thorough" },
 ];
 
 export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
@@ -50,123 +31,142 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
   const [sensitivities, setSensitivities] = useState("");
   const [timeBudget, setTimeBudget] = useState<TimeBudget>("5min");
 
-  const toggleGoal = (g: Goal) =>
-    setGoals((prev) =>
-      prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]
-    );
+  const toggle = (g: Goal) =>
+    setGoals((p) => (p.includes(g) ? p.filter((x) => x !== g) : [...p, g]));
 
   return (
-    <div className="px-2 animate-fade-up">
-      <div className="text-center mb-6">
-        <span className="text-3xl">🎯</span>
-        <h2 className="mt-3 font-display text-xl font-bold text-sand-900">
+    <div className="max-w-md mx-auto px-6 py-8">
+      {/* Header */}
+      <div className="mb-8 animate-fade-up">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f7f4ef] mb-4">
+          <span className="text-[22px]">🎯</span>
+        </div>
+        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
           What brings you here?
         </h2>
-        <p className="mt-1 text-sm text-sand-500">
-          Pick your goals so we can personalize your experience. All optional.
+        <p className="text-[14px] text-[#8a7d6e] leading-relaxed">
+          Pick what you care about most. This helps us personalize your
+          experience. Everything here is optional.
         </p>
       </div>
 
-      {/* Goals — multi-select */}
-      <div className="space-y-2 mb-6">
-        {GOALS.map((g) => {
-          const active = goals.includes(g.value);
-          return (
-            <button
-              key={g.value}
-              onClick={() => toggleGoal(g.value)}
-              className={`w-full card border px-4 py-3.5 flex items-center gap-3 transition active:scale-[0.98] ${
-                active
-                  ? "border-sage-300 bg-sage-50"
-                  : "border-sand-200 hover:border-sand-300"
-              }`}
-            >
-              <span className="text-lg">{g.icon}</span>
-              <div className="text-left flex-1">
-                <p className="text-sm font-semibold text-sand-800">
-                  {g.label}
-                </p>
-                <p className="text-xs text-sand-500">{g.desc}</p>
-              </div>
-              <div
-                className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition ${
-                  active
-                    ? "border-sage-600 bg-sage-600"
-                    : "border-sand-300"
-                }`}
+      {/* Goals */}
+      <div className="mb-8 animate-fade-up stagger-1">
+        <SectionLabel>Your goals</SectionLabel>
+        <div className="space-y-2">
+          {GOALS.map((g) => {
+            const active = goals.includes(g.value);
+            return (
+              <button
+                key={g.value}
+                onClick={() => toggle(g.value)}
+                className={`
+                  w-full border-l-[3px] ${g.color} text-left
+                  px-4 py-3.5 flex items-center gap-3 rounded-2xl border
+                  transition-all duration-150
+                  ${
+                    active
+                      ? "bg-[#eef3ee] border-[#c8d9c8] shadow-sm"
+                      : "bg-white border-[#e8e2d8] hover:bg-[#faf8f4]"
+                  }
+                `}
               >
-                {active && (
-                  <svg
-                    width="10"
-                    height="8"
-                    viewBox="0 0 10 8"
-                    fill="none"
-                    className="text-white"
-                  >
-                    <path
-                      d="M1 4L3.5 6.5L9 1"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-              </div>
-            </button>
-          );
-        })}
+                <span className="text-[18px]">{g.icon}</span>
+                <span className="flex-1 text-[14px] font-semibold text-[#2e2a25]">
+                  {g.label}
+                </span>
+                <div
+                  className={`
+                    flex h-5 w-5 items-center justify-center rounded-md border-[1.5px]
+                    transition-all duration-150
+                    ${
+                      active
+                        ? "border-[#3d5a3d] bg-[#3d5a3d]"
+                        : "border-[#d0c9bf]"
+                    }
+                  `}
+                >
+                  {active && (
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                      <path
+                        d="M1 4L3.5 6.5L9 1"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Sensitivities */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-sand-700 mb-1.5">
-          Any known allergies or sensitivities? <span className="text-sand-400">(optional)</span>
-        </label>
+      <div className="mb-8 animate-fade-up stagger-2">
+        <SectionLabel>Allergies or sensitivities</SectionLabel>
         <input
           type="text"
           value={sensitivities}
           onChange={(e) => setSensitivities(e.target.value)}
           placeholder="e.g. fragrance, salicylic acid, latex…"
-          className="w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm text-sand-800 placeholder:text-sand-400 focus:border-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-100 transition"
+          className="
+            w-full rounded-2xl border border-[#e0dbd3] bg-white
+            px-4 py-3.5 text-[14px] text-[#2e2a25]
+            placeholder:text-[#c4bbb0]
+            focus:border-[#a3bfa3] focus:outline-none focus:ring-2 focus:ring-[#eef3ee]
+            transition-all duration-150
+          "
         />
+        <p className="mt-1.5 text-[11px] text-[#b0a697]">
+          We&apos;ll flag these in product recommendations
+        </p>
       </div>
 
       {/* Time budget */}
-      <div className="mb-8">
-        <label className="block text-sm font-medium text-sand-700 mb-2">
-          How much time for your routine?
-        </label>
-        <div className="flex gap-2">
+      <div className="mb-10 animate-fade-up stagger-3">
+        <SectionLabel>Routine time budget</SectionLabel>
+        <div className="grid grid-cols-3 gap-2">
           {TIME_OPTIONS.map((t) => (
             <button
               key={t.value}
               onClick={() => setTimeBudget(t.value)}
-              className={`flex-1 rounded-xl border py-2.5 text-xs font-medium transition active:scale-[0.97] ${
-                timeBudget === t.value
-                  ? "border-sage-400 bg-sage-50 text-sage-800"
-                  : "border-sand-200 text-sand-500 hover:border-sand-300"
-              }`}
+              className={`
+                rounded-2xl border py-3.5 text-center transition-all duration-150
+                ${
+                  timeBudget === t.value
+                    ? "border-[#3d5a3d] bg-[#eef3ee] shadow-sm"
+                    : "border-[#e0dbd3] bg-white hover:bg-[#faf8f4]"
+                }
+              `}
             >
-              {t.label}
+              <p
+                className={`text-[15px] font-semibold ${
+                  timeBudget === t.value ? "text-[#3d5a3d]" : "text-[#2e2a25]"
+                }`}
+              >
+                {t.label}
+              </p>
+              <p className="text-[11px] text-[#8a7d6e] mt-0.5">{t.sub}</p>
             </button>
           ))}
         </div>
       </div>
 
-      <button
-        onClick={() => onContinue({ goals, sensitivities, timeBudget })}
-        className="w-full rounded-2xl bg-sage-600 py-3.5 text-sm font-semibold text-white shadow-md shadow-sage-200 transition hover:bg-sage-700 active:scale-[0.98]"
-      >
-        Continue →
-      </button>
-
-      <button
-        onClick={onSkip}
-        className="mt-2 w-full text-center text-sm text-sand-400 hover:text-sand-600 py-2 transition"
-      >
-        Skip for now
-      </button>
+      {/* CTAs */}
+      <div className="animate-fade-up stagger-4">
+        <ButtonPrimary
+          onClick={() => onContinue({ goals, sensitivities, timeBudget })}
+          className="w-full"
+        >
+          Continue →
+        </ButtonPrimary>
+        <div className="mt-3 text-center">
+          <ButtonText onClick={onSkip}>Skip for now</ButtonText>
+        </div>
+      </div>
     </div>
   );
 }

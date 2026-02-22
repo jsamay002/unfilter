@@ -1,100 +1,151 @@
 "use client";
 
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  CalloutPanel,
+  SectionLabel,
+  Divider,
+} from "@/components/ui";
+
 interface PrivacyStepProps {
   onAccept: () => void;
   onDecline: () => void;
 }
 
-const PRIVACY_POINTS = [
+const SECTIONS = [
   {
-    icon: "📱",
-    title: "On-device processing",
-    desc: "Your photos are analyzed right on your phone. Nothing is uploaded to any server — ever.",
+    label: "Processing",
+    items: [
+      {
+        icon: "📱",
+        title: "Analyzed on your phone",
+        desc: "Photos are processed locally using on-device models. Nothing is sent to a server.",
+      },
+      {
+        icon: "🙈",
+        title: "Automatic face protection",
+        desc: "Faces are blurred by default. You're encouraged to crop to just the area of concern.",
+      },
+    ],
   },
   {
-    icon: "🙈",
-    title: "Face blur + crop by default",
-    desc: "If a face is detected, it's automatically blurred. You're encouraged to crop to just the area of concern.",
+    label: "Storage",
+    items: [
+      {
+        icon: "🗑️",
+        title: "Auto-delete by default",
+        desc: "Photos are removed after each check-in. You decide if anything gets saved, and for how long.",
+      },
+      {
+        icon: "💾",
+        title: "Encrypted if you save",
+        desc: "Anything you keep is stored encrypted on your device — not in the cloud.",
+      },
+    ],
   },
   {
-    icon: "🗑️",
-    title: "Auto-delete by default",
-    desc: "Photos are deleted after each check-in unless you choose to save them. You control how long anything is kept.",
+    label: "Identity",
+    items: [
+      {
+        icon: "🚫",
+        title: "No accounts, no tracking",
+        desc: "No sign-up, no analytics cookies, no behavioral tracking. We don't know who you are.",
+      },
+      {
+        icon: "🧬",
+        title: "No biometric data",
+        desc: "We never use facial recognition or collect biometric identifiers of any kind.",
+      },
+    ],
   },
   {
-    icon: "🚫",
-    title: "No face recognition",
-    desc: "We never identify who you are from photos. No biometric data is collected or stored.",
-  },
-  {
-    icon: "📤",
-    title: "Export or delete anytime",
-    desc: "Download a summary for a doctor or parent, or wipe everything with one tap. It's your data.",
-  },
-  {
-    icon: "🔕",
-    title: "No tracking, no ads, no accounts",
-    desc: "No analytics tracking, no advertisements, no sign-up required. Just you and the app.",
+    label: "Control",
+    items: [
+      {
+        icon: "📤",
+        title: "Export or delete anytime",
+        desc: "Download a summary for a doctor, or wipe everything with a single tap.",
+      },
+    ],
   },
 ];
 
 export function PrivacyStep({ onAccept, onDecline }: PrivacyStepProps) {
   return (
-    <div className="px-2 animate-fade-up">
-      <div className="text-center mb-6">
-        <span className="text-3xl">🔒</span>
-        <h2 className="mt-3 font-display text-xl font-bold text-sand-900">
-          Your Privacy Comes First
-        </h2>
-        <p className="mt-1 text-sm text-sand-500">
-          Here&apos;s exactly how we protect you — takes about 60 seconds to read.
-        </p>
+    <div className="max-w-lg mx-auto px-6 py-8">
+      {/* Header */}
+      <div className="mb-8 animate-fade-up">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eef3ee]">
+            <span className="text-[22px]">🔒</span>
+          </div>
+          <div>
+            <h2 className="text-heading text-[22px] text-[#2e2a25]">
+              Private by design
+            </h2>
+            <p className="text-[13px] text-[#8a7d6e]">
+              Here&apos;s how your data is protected
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="space-y-3 mb-6">
-        {PRIVACY_POINTS.map((point) => (
+      {/* Grouped privacy items */}
+      <div className="space-y-6">
+        {SECTIONS.map((section, si) => (
           <div
-            key={point.title}
-            className="card border border-sand-200 p-4 flex gap-3"
+            key={section.label}
+            className={`animate-fade-up stagger-${si + 1}`}
           >
-            <span className="text-xl shrink-0">{point.icon}</span>
-            <div>
-              <h3 className="text-sm font-semibold text-sand-800">
-                {point.title}
-              </h3>
-              <p className="mt-0.5 text-xs text-sand-500 leading-relaxed">
-                {point.desc}
-              </p>
+            <SectionLabel>{section.label}</SectionLabel>
+            <div className="space-y-2.5">
+              {section.items.map((item) => (
+                <div
+                  key={item.title}
+                  className="card px-4 py-3.5 flex gap-3.5 items-start"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f7f4ef] text-[17px]">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#2e2a25] leading-tight">
+                      {item.title}
+                    </p>
+                    <p className="text-[12px] text-[#8a7d6e] leading-snug mt-1">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
       </div>
 
-      {/* TL;DR */}
-      <div className="rounded-xl bg-sage-50 border border-sage-100 px-4 py-3 mb-6">
-        <p className="text-xs text-sage-700 leading-relaxed">
-          <strong>TL;DR:</strong> Your photos and data stay on your device,
-          are never uploaded, and are deleted automatically. You&apos;re in
-          complete control.
-        </p>
+      <Divider />
+
+      {/* Why this matters */}
+      <div className="animate-fade-up stagger-5">
+        <CalloutPanel icon="💡" variant="sage">
+          <strong>Why this matters:</strong> Skin concerns are personal. We
+          built Unfilter so you can get guidance without giving up your privacy
+          or worrying about your photos ending up somewhere unexpected.
+        </CalloutPanel>
       </div>
 
-      <button
-        onClick={onAccept}
-        className="w-full rounded-2xl bg-sage-600 py-3.5 text-sm font-semibold text-white shadow-md shadow-sage-200 transition hover:bg-sage-700 active:scale-[0.98]"
-      >
-        I Understand — Continue
-      </button>
+      {/* CTAs */}
+      <div className="mt-8 space-y-2.5 animate-fade-up stagger-6">
+        <ButtonPrimary onClick={onAccept} className="w-full">
+          Sounds good — continue
+        </ButtonPrimary>
+        <ButtonSecondary onClick={onDecline} className="w-full">
+          Skip photo features — explore learn-only mode
+        </ButtonSecondary>
+      </div>
 
-      <button
-        onClick={onDecline}
-        className="mt-2 w-full rounded-2xl border border-sand-200 py-3 text-sm font-medium text-sand-500 transition hover:bg-sand-50"
-      >
-        I&apos;d rather not — Learn-Only Mode
-      </button>
-
-      <p className="mt-3 text-center text-[10px] text-sand-400">
-        You can review these policies anytime in Settings
+      <p className="mt-4 text-center text-[11px] text-[#b0a697]">
+        You can revisit these details anytime in Settings
       </p>
     </div>
   );

@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 
 export const metadata = {
   title: "Unfilter",
-  description: "Privacy-first skin check-in + confidence coach",
+  description: "Privacy-first skin health + confidence coach",
 };
 
 export default function RootLayout({
@@ -20,11 +20,11 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
