@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
+import { OnboardingGate } from "@/components/OnboardingGate";
+import { useOnboardingStore } from "@/features/onboarding/store";
 
 const QUICK_ACTIONS = [
   {
@@ -35,61 +37,92 @@ const QUICK_ACTIONS = [
 ];
 
 export default function HomePage() {
+  const profile = useOnboardingStore((s) => s.profile);
+  const isUnder13 = profile.ageGroup === "under13";
+
   return (
-    <AppShell>
-      <div className="mx-auto max-w-2xl">
-        {/* Greeting */}
-        <div className="mb-8 animate-fade-up">
-          <h1 className="font-display text-2xl font-bold text-sand-900 tracking-tight">
-            Welcome to Unfilter
-          </h1>
-          <p className="mt-1 text-sm text-sand-500">
-            Your private skin health + confidence coach. No filters, no
-            judgment — just guidance.
-          </p>
-        </div>
+    <OnboardingGate>
+      <AppShell>
+        <div className="mx-auto max-w-2xl">
+          {/* Greeting */}
+          <div className="mb-8 animate-fade-up">
+            <h1 className="font-display text-2xl font-bold text-sand-900 tracking-tight">
+              Welcome to Unfilter
+            </h1>
+            <p className="mt-1 text-sm text-sand-500">
+              {isUnder13
+                ? "Explore skin health guides and confidence tools — your private learning space."
+                : "Your private skin health + confidence coach. No filters, no judgment — just guidance."}
+            </p>
 
-        {/* Quick actions grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-          {QUICK_ACTIONS.map((action, i) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              className={`card border p-4 transition-all hover:shadow-md ${action.color} animate-fade-up`}
-              style={{ animationDelay: `${i * 70}ms`, animationFillMode: "both" }}
-            >
-              <span className="text-2xl">{action.icon}</span>
-              <h3 className="mt-2 font-display text-sm font-semibold text-sand-900">
-                {action.title}
-              </h3>
-              <p className="mt-0.5 text-xs text-sand-500">{action.desc}</p>
-            </Link>
-          ))}
-        </div>
+            {/* Show personalized goals if set */}
+            {profile.goals.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {profile.goals.map((g) => (
+                  <span
+                    key={g}
+                    className="rounded-full bg-sage-50 border border-sage-200 px-2.5 py-1 text-[11px] font-medium text-sage-700"
+                  >
+                    {g === "acne" && "🔴 Breakouts"}
+                    {g === "irritation" && "🩹 Irritation"}
+                    {g === "routine" && "🧴 Routine"}
+                    {g === "confidence" && "✨ Confidence"}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
 
-        {/* Privacy reminder */}
-        <div className="card border border-sage-200 bg-sage-50 p-4 animate-fade-up" style={{ animationDelay: "300ms", animationFillMode: "both" }}>
-          <div className="flex items-start gap-3">
-            <span className="text-lg">🔒</span>
-            <div>
-              <h3 className="text-sm font-semibold text-sage-800">
-                Your privacy comes first
-              </h3>
-              <p className="mt-0.5 text-xs text-sage-600 leading-relaxed">
-                Everything runs on your device. Photos are never uploaded. Data
-                auto-deletes unless you choose to save it. No accounts, no
-                tracking, no ads.
-              </p>
+          {/* Quick actions grid — filter out check-in for under-13 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+            {QUICK_ACTIONS.filter(
+              (a) => !isUnder13 || a.href !== "/check-in"
+            ).map((action, i) => (
+              <Link
+                key={action.href}
+                href={action.href}
+                className={`card border p-4 transition-all hover:shadow-md ${action.color} animate-fade-up`}
+                style={{
+                  animationDelay: `${i * 70}ms`,
+                  animationFillMode: "both",
+                }}
+              >
+                <span className="text-2xl">{action.icon}</span>
+                <h3 className="mt-2 font-display text-sm font-semibold text-sand-900">
+                  {action.title}
+                </h3>
+                <p className="mt-0.5 text-xs text-sand-500">{action.desc}</p>
+              </Link>
+            ))}
+          </div>
+
+          {/* Privacy reminder */}
+          <div
+            className="card border border-sage-200 bg-sage-50 p-4 animate-fade-up"
+            style={{ animationDelay: "300ms", animationFillMode: "both" }}
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-lg">🔒</span>
+              <div>
+                <h3 className="text-sm font-semibold text-sage-800">
+                  Your privacy comes first
+                </h3>
+                <p className="mt-0.5 text-xs text-sage-600 leading-relaxed">
+                  Everything runs on your device. Photos are never uploaded.
+                  Data auto-deletes unless you choose to save it. No accounts,
+                  no tracking, no ads.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Educational disclaimer */}
-        <p className="mt-6 text-center text-[11px] text-sand-400 leading-relaxed max-w-sm mx-auto">
-          Unfilter provides educational guidance only — not medical diagnosis.
-          Always talk to a healthcare provider for medical concerns.
-        </p>
-      </div>
-    </AppShell>
+          {/* Educational disclaimer */}
+          <p className="mt-6 text-center text-[11px] text-sand-400 leading-relaxed max-w-sm mx-auto">
+            Unfilter provides educational guidance only — not medical diagnosis.
+            Always talk to a healthcare provider for medical concerns.
+          </p>
+        </div>
+      </AppShell>
+    </OnboardingGate>
   );
 }
