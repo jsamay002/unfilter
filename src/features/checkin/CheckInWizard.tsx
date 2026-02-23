@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type {
   CheckInStep,
   QualityReport,
@@ -21,16 +22,23 @@ import { QualityGateCard } from "@/features/checkin/components/quality-gate/Qual
 import { SymptomForm } from "@/features/checkin/components/questions/SymptomForm";
 import { ResultsCard } from "@/features/checkin/components/results/ResultsCard";
 import { AnalyzingSpinner } from "@/features/checkin/components/AnalyzingSpinner";
+import { useJournalStore } from "@/features/journal/store";
+import type { JournalEntry } from "@/features/journal/types";
 
-export default function CheckInPage() {
+export default function CheckInWizard() {
+  const router = useRouter();
+  const { addEntry } = useJournalStore();
+
   // Wizard state
   const [step, setStep] = useState<CheckInStep>("capture");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   // Pipeline data
   const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
   const [metrics, setMetrics] = useState<SkinMetrics | null>(null);
+  const [symptoms, setSymptoms] = useState<SymptomContext | null>(null);
   const [categories, setCategories] = useState<SkinCategory[]>([]);
   const [actionPlan, setActionPlan] = useState<ActionPlan | null>(null);
   const [redFlags, setRedFlags] = useState<RedFlagResult | null>(null);
@@ -43,6 +51,11 @@ export default function CheckInPage() {
 
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+
+      // Also read as data URL for journal persistence
+      const reader = new FileReader();
+      reader.onload = () => setPhotoDataUrl(reader.result as string);
+      reader.readAsDataURL(file);
 
       // Load image, then run quality gate
       const img = new Image();
@@ -59,26 +72,28 @@ export default function CheckInPage() {
 
   const handleRetake = useCallback(() => {
     setPreviewUrl(null);
+    setPhotoDataUrl(null);
     setQualityReport(null);
     setStep("capture");
   }, []);
 
   // ---- Step 3: After questions, run analysis ----
   const handleSymptomSubmit = useCallback(
-    async (symptoms: SymptomContext) => {
+    async (s: SymptomContext) => {
       if (!imgRef.current) return;
+      setSymptoms(s);
       setStep("analyzing");
 
       const m = await runSkinAnalysis(imgRef.current);
       setMetrics(m);
 
-      const rf = detectRedFlags(symptoms, m);
+      const rf = detectRedFlags(s, m);
       setRedFlags(rf);
 
-      const cats = generateCategories(symptoms, m);
+      const cats = generateCategories(s, m);
       setCategories(cats);
 
-      const plan = generateActionPlan(cats, symptoms);
+      const plan = generateActionPlan(cats, s);
       setActionPlan(plan);
 
       setStep("results");
@@ -86,18 +101,39 @@ export default function CheckInPage() {
     []
   );
 
-  // ---- Save / discard ----
+  // ---- Save to journal ----
   const handleSave = useCallback(() => {
-    // TODO: Persist to local journal (next sprint)
-    alert("✅ Saved to your Skin Journal (local storage — coming next sprint)");
-  }, []);
+    if (!metrics || !symptoms || !redFlags) return;
 
+    const entry: JournalEntry = {
+      id: `checkin-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      timestamp: Date.now(),
+      photoDataUrl,
+      metrics,
+      symptoms,
+      categories: categories.map((c) => ({
+        name: c.name,
+        confidence: c.confidence,
+        severity: c.severity,
+      })),
+      hadRedFlags: redFlags.triggered,
+      escalationLevel: redFlags.escalationLevel,
+      note: "",
+      tags: [],
+    };
+
+    addEntry(entry);
+    router.push("/journal");
+  }, [metrics, symptoms, redFlags, categories, photoDataUrl, addEntry, router]);
+
+  // ---- Discard ----
   const handleDiscard = useCallback(() => {
-    // Reset everything
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
+    setPhotoDataUrl(null);
     setQualityReport(null);
     setMetrics(null);
+    setSymptoms(null);
     setCategories([]);
     setActionPlan(null);
     setRedFlags(null);
@@ -105,18 +141,18 @@ export default function CheckInPage() {
   }, [previewUrl]);
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-6">
+    <div className="mx-auto max-w-lg">
       {/* Step indicator */}
       <StepBar current={step} />
 
       {/* ---- CAPTURE ---- */}
       {step === "capture" && (
-        <div className="mt-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-800 mb-1">
+        <div className="mt-6 animate-fade-up">
+          <div className="card p-5">
+            <h2 className="text-heading text-[18px] text-[#2e2a25] mb-1">
               New Check-in
             </h2>
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-[13px] text-[#8a7d6e] mb-4">
               Take or upload a photo of the area you want guidance on. Crop
               close to the affected area — no need to include your full face.
             </p>
@@ -131,19 +167,19 @@ export default function CheckInPage() {
                 />
                 <button
                   onClick={handleRetake}
-                  className="absolute top-2 right-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-600 backdrop-blur hover:bg-white"
+                  className="absolute top-2 right-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-medium text-[#6b5e50] backdrop-blur shadow-sm hover:bg-white transition"
                 >
                   ✕ Remove
                 </button>
               </div>
             ) : (
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 py-12 transition hover:border-slate-400 hover:bg-slate-50">
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#d8d0c4] py-14 transition hover:border-[#a3bfa3] hover:bg-[#f7f4ef]">
                 <span className="text-3xl mb-2">📷</span>
-                <span className="text-sm font-medium text-slate-600">
+                <span className="text-[14px] font-medium text-[#6b5e50]">
                   Tap to take or upload a photo
                 </span>
-                <span className="text-xs text-slate-400 mt-1">
-                  EXIF data is stripped · photo stays on-device
+                <span className="text-[12px] text-[#b0a697] mt-1">
+                  EXIF data is stripped · stays on your device
                 </span>
                 <input
                   type="file"
@@ -155,12 +191,9 @@ export default function CheckInPage() {
               </label>
             )}
 
-            {/* Privacy note */}
-            <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
+            <div className="mt-3 flex items-center gap-2 text-[12px] text-[#b0a697]">
               <span>🔒</span>
-              <span>
-                Your photo is analyzed on-device and never leaves your phone.
-              </span>
+              <span>Analyzed on-device. Never uploaded anywhere.</span>
             </div>
           </div>
         </div>
@@ -168,7 +201,7 @@ export default function CheckInPage() {
 
       {/* ---- QUALITY GATE ---- */}
       {step === "quality" && qualityReport && (
-        <div className="mt-6">
+        <div className="mt-6 animate-fade-up">
           {previewUrl && (
             <div className="mb-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -189,7 +222,7 @@ export default function CheckInPage() {
 
       {/* ---- QUESTIONS ---- */}
       {step === "questions" && (
-        <div className="mt-6">
+        <div className="mt-6 animate-fade-up">
           <SymptomForm
             onSubmit={handleSymptomSubmit}
             onBack={() => setStep("quality")}
@@ -206,7 +239,7 @@ export default function CheckInPage() {
         actionPlan &&
         redFlags &&
         categories.length > 0 && (
-          <div className="mt-6">
+          <div className="mt-6 animate-fade-up">
             <ResultsCard
               categories={categories}
               actionPlan={actionPlan}
@@ -236,24 +269,24 @@ function StepBar({ current }: { current: CheckInStep }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       {STEPS.map((s, i) => {
         const isActive = i === currentIdx;
         const isDone = i < currentIdx;
         return (
           <div key={s.key} className="flex-1">
             <div
-              className={`h-1.5 rounded-full transition-colors ${
+              className={`h-[3px] rounded-full transition-all duration-500 ${
                 isDone
-                  ? "bg-slate-800"
+                  ? "bg-[#3d5a3d]"
                   : isActive
-                    ? "bg-slate-500"
-                    : "bg-slate-200"
+                    ? "bg-[#7da37d]"
+                    : "bg-[#e0dbd3]"
               }`}
             />
             <p
-              className={`mt-1 text-center text-[10px] font-medium ${
-                isActive ? "text-slate-800" : "text-slate-400"
+              className={`mt-1 text-center text-[10px] font-semibold ${
+                isActive ? "text-[#2e2a25]" : "text-[#b0a697]"
               }`}
             >
               {s.label}
