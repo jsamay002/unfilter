@@ -11,13 +11,13 @@ export function Under13Step({ onContinueLearnOnly }: Under13StepProps) {
     <div className="max-w-md mx-auto px-6 py-8">
       {/* Header */}
       <div className="mb-8 animate-fade-up">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fef5f3] mb-4">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--coral-light)] mb-4">
           <span className="text-[22px]">🌱</span>
         </div>
-        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
+        <h2 className="text-heading text-[22px] text-[var(--text-primary)] mb-2">
           Great — here&apos;s your experience
         </h2>
-        <p className="text-[14px] text-[#8a7d6e] leading-relaxed max-w-sm">
+        <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed max-w-sm">
           Photo check-ins are available for ages 13+, but there&apos;s plenty
           you can explore right now:
         </p>

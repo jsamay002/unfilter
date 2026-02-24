@@ -14,9 +14,9 @@ interface PersonalizeStepProps {
 }
 
 const GOALS: { value: Goal; icon: string; label: string; color: string }[] = [
-  { value: "acne", icon: "🔴", label: "Breakouts", color: "border-l-[#d44a32]" },
-  { value: "irritation", icon: "🩹", label: "Irritation & redness", color: "border-l-[#e8b86d]" },
-  { value: "routine", icon: "🧴", label: "Build a routine", color: "border-l-[#7da37d]" },
+  { value: "acne", icon: "🔴", label: "Breakouts", color: "border-l-[var(--coral)]" },
+  { value: "irritation", icon: "🩹", label: "Irritation & redness", color: "border-l-[var(--amber)]" },
+  { value: "routine", icon: "🧴", label: "Build a routine", color: "border-l-[var(--accent)]" },
   { value: "confidence", icon: "✨", label: "Skin confidence", color: "border-l-[#8b7ec8]" },
 ];
 
@@ -38,13 +38,13 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
     <div className="max-w-md mx-auto px-6 py-8">
       {/* Header */}
       <div className="mb-8 animate-fade-up">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f7f4ef] mb-4">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--warm-100)] mb-4">
           <span className="text-[22px]">🎯</span>
         </div>
-        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
+        <h2 className="text-heading text-[22px] text-[var(--text-primary)] mb-2">
           What brings you here?
         </h2>
-        <p className="text-[14px] text-[#8a7d6e] leading-relaxed">
+        <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed">
           Pick what you care about most. This helps us personalize your
           experience. Everything here is optional.
         </p>
@@ -66,13 +66,13 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
                   transition-all duration-150
                   ${
                     active
-                      ? "bg-[#eef3ee] border-[#c8d9c8] shadow-sm"
-                      : "bg-white border-[#e8e2d8] hover:bg-[#faf8f4]"
+                      ? "bg-[var(--accent-light)] border-[var(--accent-light)] shadow-sm"
+                      : "bg-white border-[var(--warm-300)] hover:bg-[var(--bg-primary)]"
                   }
                 `}
               >
                 <span className="text-[18px]">{g.icon}</span>
-                <span className="flex-1 text-[14px] font-semibold text-[#2e2a25]">
+                <span className="flex-1 text-[14px] font-semibold text-[var(--text-primary)]">
                   {g.label}
                 </span>
                 <div
@@ -81,8 +81,8 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
                     transition-all duration-150
                     ${
                       active
-                        ? "border-[#3d5a3d] bg-[#3d5a3d]"
-                        : "border-[#d0c9bf]"
+                        ? "border-[var(--accent-dark)] bg-[var(--accent-dark)]"
+                        : "border-[var(--border-hover)]"
                     }
                   `}
                 >
@@ -113,14 +113,14 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
           onChange={(e) => setSensitivities(e.target.value)}
           placeholder="e.g. fragrance, salicylic acid, latex…"
           className="
-            w-full rounded-2xl border border-[#e0dbd3] bg-white
-            px-4 py-3.5 text-[14px] text-[#2e2a25]
-            placeholder:text-[#c4bbb0]
-            focus:border-[#a3bfa3] focus:outline-none focus:ring-2 focus:ring-[#eef3ee]
+            w-full rounded-2xl border border-[var(--border)] bg-white
+            px-4 py-3.5 text-[14px] text-[var(--text-primary)]
+            placeholder:text-[var(--text-muted)]
+            focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-light)]
             transition-all duration-150
           "
         />
-        <p className="mt-1.5 text-[11px] text-[#b0a697]">
+        <p className="mt-1.5 text-[11px] text-[var(--text-muted)]">
           We&apos;ll flag these in product recommendations
         </p>
       </div>
@@ -137,19 +137,19 @@ export function PersonalizeStep({ onContinue, onSkip }: PersonalizeStepProps) {
                 rounded-2xl border py-3.5 text-center transition-all duration-150
                 ${
                   timeBudget === t.value
-                    ? "border-[#3d5a3d] bg-[#eef3ee] shadow-sm"
-                    : "border-[#e0dbd3] bg-white hover:bg-[#faf8f4]"
+                    ? "border-[var(--accent-dark)] bg-[var(--accent-light)] shadow-sm"
+                    : "border-[var(--border)] bg-white hover:bg-[var(--bg-primary)]"
                 }
               `}
             >
               <p
                 className={`text-[15px] font-semibold ${
-                  timeBudget === t.value ? "text-[#3d5a3d]" : "text-[#2e2a25]"
+                  timeBudget === t.value ? "text-[var(--accent-dark)]" : "text-[var(--text-primary)]"
                 }`}
               >
                 {t.label}
               </p>
-              <p className="text-[11px] text-[#8a7d6e] mt-0.5">{t.sub}</p>
+              <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{t.sub}</p>
             </button>
           ))}
         </div>

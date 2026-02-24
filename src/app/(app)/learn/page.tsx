@@ -25,10 +25,10 @@ export default function LearnPage() {
     return (
       <OnboardingGate>
         <AppShell>
-          <div className="mx-auto max-w-2xl">
+          <div className="mx-auto max-w-3xl">
             <button
               onClick={() => setActiveArticle(null)}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[#8a7d6e] hover:text-[#5c5245] transition mb-6"
+              className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition mb-6"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M9 3L5 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -39,14 +39,14 @@ export default function LearnPage() {
             <div className="animate-fade-up">
               <div className="flex items-center gap-2.5 mb-2">
                 <span className="text-[24px]">{activeArticle.emoji}</span>
-                <span className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#b0a697]">
+                <span className="text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
                   {CATEGORY_META[activeArticle.category].label}
                 </span>
               </div>
-              <h1 className="text-heading text-[24px] text-[#2e2a25] mb-2">
+              <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)] mb-2">
                 {activeArticle.title}
               </h1>
-              <p className="text-[14px] text-[#8a7d6e] leading-relaxed mb-8">
+              <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed mb-8">
                 {activeArticle.summary}
               </p>
 
@@ -56,10 +56,10 @@ export default function LearnPage() {
                     key={i}
                     className={`animate-fade-up stagger-${Math.min(i + 1, 6)}`}
                   >
-                    <h2 className="text-[16px] font-semibold text-[#2e2a25] mb-2">
+                    <h2 className="text-[16px] font-semibold text-[var(--text-primary)] mb-2">
                       {section.heading}
                     </h2>
-                    <p className="text-[14px] text-[#5c5245] leading-[1.75]">
+                    <p className="text-[14px] text-[var(--text-secondary)] leading-[1.75]">
                       {section.body}
                     </p>
                   </div>
@@ -67,8 +67,8 @@ export default function LearnPage() {
               </div>
 
               {/* Disclaimer */}
-              <div className="mt-8 rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] px-4 py-3">
-                <p className="text-[11px] text-[#8a7d6e] leading-relaxed">
+              <div className="mt-8 rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] px-4 py-3">
+                <p className="text-[11px] text-[var(--text-tertiary)] leading-relaxed">
                   This content is for educational purposes only and does not
                   constitute medical advice. Consult a healthcare professional
                   for personalized guidance.
@@ -80,7 +80,7 @@ export default function LearnPage() {
                 {activeArticle.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-[#f0ede7] px-2.5 py-1 text-[10px] font-semibold text-[#8a7d6e]"
+                    className="rounded-full bg-[var(--bg-secondary)] px-2.5 py-1 text-[10px] font-semibold text-[var(--text-tertiary)]"
                   >
                     #{tag}
                   </span>
@@ -97,13 +97,13 @@ export default function LearnPage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-3xl">
           {/* Header */}
           <div className="mb-6 animate-fade-up">
-            <h1 className="text-heading text-[24px] text-[#2e2a25]">
+            <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)]">
               Learn Hub
             </h1>
-            <p className="mt-1 text-[14px] text-[#8a7d6e]">
+            <p className="mt-1 text-[15px] text-[var(--text-secondary)]">
               Real information. No TikTok myths. No sponsored nonsense.
             </p>
           </div>
@@ -142,10 +142,10 @@ export default function LearnPage() {
                     className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left`}
                   >
                     <span className="text-[20px]">{meta.icon}</span>
-                    <p className="text-[13px] font-semibold text-[#2e2a25] mt-2">
+                    <p className="text-[13px] font-semibold text-[var(--text-primary)] mt-2">
                       {meta.label}
                     </p>
-                    <p className="text-[11px] text-[#8a7d6e] mt-0.5">
+                    <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
                       {count} {count === 1 ? "article" : "articles"}
                     </p>
                   </button>
@@ -169,10 +169,10 @@ export default function LearnPage() {
                   {article.emoji}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-[#2e2a25]">
+                  <p className="text-[14px] font-semibold text-[var(--text-primary)]">
                     {article.title}
                   </p>
-                  <p className="text-[12px] text-[#8a7d6e] mt-0.5 line-clamp-2">
+                  <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5 line-clamp-2">
                     {article.summary}
                   </p>
                 </div>
@@ -181,7 +181,7 @@ export default function LearnPage() {
                   height="14"
                   viewBox="0 0 14 14"
                   fill="none"
-                  className="text-[#c4bbb0] shrink-0 mt-1"
+                  className="text-[var(--text-muted)] shrink-0 mt-1"
                 >
                   <path
                     d="M5 3l4 4-4 4"
@@ -216,8 +216,8 @@ function FilterPill({
       onClick={onClick}
       className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition-all ${
         active
-          ? "bg-[#3d5a3d] text-white shadow-sm"
-          : "bg-[#f0ede7] text-[#6b5e50] hover:bg-[#e8e2d8]"
+          ? "bg-[var(--accent-dark)] text-white shadow-sm"
+          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--warm-300)]"
       }`}
     >
       <span className="text-[13px]">{icon}</span>

@@ -17,25 +17,25 @@ const AGE_OPTIONS: {
     value: "under13",
     label: "Under 13",
     features: "Learn + Confidence mode",
-    accent: "border-l-[#e8b86d]",
+    accent: "border-l-[var(--amber)]",
   },
   {
     value: "13-15",
     label: "13–15",
     features: "All features available",
-    accent: "border-l-[#7da37d]",
+    accent: "border-l-[var(--accent)]",
   },
   {
     value: "16-17",
     label: "16–17",
     features: "All features available",
-    accent: "border-l-[#7da37d]",
+    accent: "border-l-[var(--accent)]",
   },
   {
     value: "18plus",
     label: "18+",
     features: "All features available",
-    accent: "border-l-[#7da37d]",
+    accent: "border-l-[var(--accent)]",
   },
 ];
 
@@ -44,13 +44,13 @@ export function AgeGateStep({ onSelect }: AgeGateStepProps) {
     <div className="max-w-md mx-auto px-6 py-8">
       {/* Header — left aligned */}
       <div className="mb-8 animate-fade-up">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f7f4ef] mb-4">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--warm-100)] mb-4">
           <span className="text-[22px]">👋</span>
         </div>
-        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
+        <h2 className="text-heading text-[22px] text-[var(--text-primary)] mb-2">
           One quick question
         </h2>
-        <p className="text-[14px] text-[#8a7d6e] leading-relaxed max-w-sm">
+        <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed max-w-sm">
           We tailor the experience to your age group. We only store which
           group — never your exact age or birthday.
         </p>
@@ -69,10 +69,10 @@ export function AgeGateStep({ onSelect }: AgeGateStepProps) {
             `}
           >
             <div>
-              <p className="text-[15px] font-semibold text-[#2e2a25]">
+              <p className="text-[15px] font-semibold text-[var(--text-primary)]">
                 {opt.label}
               </p>
-              <p className="text-[12px] text-[#8a7d6e] mt-0.5">
+              <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">
                 {opt.features}
               </p>
             </div>
@@ -81,7 +81,7 @@ export function AgeGateStep({ onSelect }: AgeGateStepProps) {
               height="16"
               viewBox="0 0 16 16"
               fill="none"
-              className="text-[#c4bbb0] shrink-0"
+              className="text-[var(--text-muted)] shrink-0"
             >
               <path
                 d="M6 4l4 4-4 4"

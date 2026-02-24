@@ -39,13 +39,13 @@ export function TutorialStep({ onFinish }: TutorialStepProps) {
     <div className="max-w-md mx-auto px-6 py-8">
       {/* Header */}
       <div className="mb-8 animate-fade-up">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f7f4ef] mb-4">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--warm-100)] mb-4">
           <span className="text-[22px]">📷</span>
         </div>
-        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-2">
+        <h2 className="text-heading text-[22px] text-[var(--text-primary)] mb-2">
           Better photos, better guidance
         </h2>
-        <p className="text-[14px] text-[#8a7d6e] leading-relaxed">
+        <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed">
           A few quick tips to get the most accurate results. Takes 30 seconds.
         </p>
       </div>
@@ -58,19 +58,19 @@ export function TutorialStep({ onFinish }: TutorialStepProps) {
             className={`card px-4 py-3.5 animate-fade-up stagger-${i + 1}`}
           >
             <div className="flex gap-3 items-start">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f7f4ef] text-[17px]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--warm-100)] text-[17px]">
                 {tip.icon}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <div className="h-[6px] w-[6px] rounded-full bg-[#7da37d]" />
-                  <p className="text-[13px] font-semibold text-[#2e2a25]">
+                  <div className="h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
+                  <p className="text-[13px] font-semibold text-[var(--text-primary)]">
                     {tip.do}
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="h-[6px] w-[6px] rounded-full bg-[#d4a0a0]" />
-                  <p className="text-[12px] text-[#8a7d6e]">{tip.dont}</p>
+                  <div className="h-[6px] w-[6px] rounded-full bg-[var(--coral)]" />
+                  <p className="text-[12px] text-[var(--text-tertiary)]">{tip.dont}</p>
                 </div>
               </div>
             </div>

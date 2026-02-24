@@ -16,13 +16,13 @@ export default function HelpPage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-3xl">
           {/* Header */}
           <div className="mb-6 animate-fade-up">
-            <h1 className="text-heading text-[24px] text-[#2e2a25]">
+            <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)]">
               Help &amp; Resources
             </h1>
-            <p className="mt-1 text-[14px] text-[#8a7d6e]">
+            <p className="mt-1 text-[15px] text-[var(--text-secondary)]">
               Know when to get help, how to talk about it, and where to go.
             </p>
           </div>
@@ -46,9 +46,9 @@ export default function HelpPage() {
               subtitle="Red flags that mean it's time to see someone"
               expanded={expandedSection === "red-flags"}
               onToggle={() => toggle("red-flags")}
-              color="border-l-[#d44a32]"
+              color="border-l-[var(--coral)]"
             >
-              <p className="text-[13px] text-[#5c5245] leading-relaxed mb-4">
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-4">
                 Most skin concerns are mild and improve with gentle care. But
                 some signs mean you should talk to a professional sooner rather
                 than later:
@@ -90,8 +90,8 @@ export default function HelpPage() {
                 />
               </div>
 
-              <div className="mt-4 rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] px-4 py-3">
-                <p className="text-[12px] text-[#6b5e50] leading-relaxed">
+              <div className="mt-4 rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] px-4 py-3">
+                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
                   <strong>When in doubt, ask.</strong> It&apos;s always better
                   to check and find out it&apos;s nothing than to wait and find
                   out it wasn&apos;t. No doctor will ever be annoyed at you for
@@ -108,7 +108,7 @@ export default function HelpPage() {
               subtitle="Step-by-step escalation, from easiest to most formal"
               expanded={expandedSection === "escalation"}
               onToggle={() => toggle("escalation")}
-              color="border-l-[#e8b86d]"
+              color="border-l-[var(--amber)]"
             >
               <div className="space-y-3">
                 <EscalationStep
@@ -157,9 +157,9 @@ export default function HelpPage() {
               subtitle="Conversation starters for talking to adults about your skin"
               expanded={expandedSection === "scripts"}
               onToggle={() => toggle("scripts")}
-              color="border-l-[#7da37d]"
+              color="border-l-[var(--accent)]"
             >
-              <p className="text-[13px] text-[#5c5245] leading-relaxed mb-4">
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-4">
                 It can feel awkward to bring up skin concerns with adults.
                 Here are some real scripts you can use — pick the one that
                 feels most natural:
@@ -208,7 +208,7 @@ export default function HelpPage() {
               onToggle={() => toggle("local")}
               color="border-l-[#8b7ec8]"
             >
-              <p className="text-[13px] text-[#5c5245] leading-relaxed mb-4">
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-4">
                 We don&apos;t track your location or collect any data about
                 where you go. Here are the types of places that can help with
                 skin concerns:
@@ -247,8 +247,8 @@ export default function HelpPage() {
                 />
               </div>
 
-              <div className="mt-4 rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] px-4 py-3">
-                <p className="text-[12px] text-[#6b5e50] leading-relaxed">
+              <div className="mt-4 rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] px-4 py-3">
+                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
                   <strong>Note:</strong> Unfilter doesn&apos;t track your
                   location, doesn&apos;t know where you are, and will never
                   collect data about where you seek care. Your health journey
@@ -260,7 +260,7 @@ export default function HelpPage() {
 
           {/* Bottom disclaimer */}
           <div className="mt-8 text-center animate-fade-up stagger-5">
-            <p className="text-[11px] text-[#b0a697] leading-relaxed max-w-sm mx-auto">
+            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed max-w-sm mx-auto">
               Unfilter provides educational information only — not medical
               advice. In an emergency, call 911 or your local emergency
               services.
@@ -305,15 +305,15 @@ function AccordionSection({
       >
         <span className="text-[20px] shrink-0">{icon}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[#2e2a25]">{title}</p>
-          <p className="text-[12px] text-[#8a7d6e] mt-0.5">{subtitle}</p>
+          <p className="text-[15px] font-semibold text-[var(--text-primary)]">{title}</p>
+          <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5">{subtitle}</p>
         </div>
         <svg
           width="16"
           height="16"
           viewBox="0 0 16 16"
           fill="none"
-          className={`text-[#c4bbb0] shrink-0 transition-transform duration-200 ${
+          className={`text-[var(--text-muted)] shrink-0 transition-transform duration-200 ${
             expanded ? "rotate-180" : ""
           }`}
         >
@@ -345,15 +345,15 @@ function RedFlag({
   items: string[];
 }) {
   const styles = {
-    soon: { bg: "bg-[#f7f4ef]", border: "border-[#e8e2d8]", dot: "bg-[#e8b86d]" },
-    prompt: { bg: "bg-[#fef8f0]", border: "border-[#f5dfc0]", dot: "bg-[#d4862a]" },
-    urgent: { bg: "bg-[#fef5f3]", border: "border-[#f8ddd6]", dot: "bg-[#d44a32]" },
+    soon: { bg: "bg-[var(--warm-100)]", border: "border-[var(--warm-300)]", dot: "bg-[var(--amber)]" },
+    prompt: { bg: "bg-[var(--amber-light)]", border: "border-[var(--amber-light)]", dot: "bg-[var(--amber)]" },
+    urgent: { bg: "bg-[var(--coral-light)]", border: "border-[var(--coral-light)]", dot: "bg-[var(--coral)]" },
   };
   const s = styles[level];
 
   return (
     <div className={`rounded-xl ${s.bg} border ${s.border} p-4`}>
-      <p className="text-[13px] font-semibold text-[#2e2a25] mb-2.5">
+      <p className="text-[13px] font-semibold text-[var(--text-primary)] mb-2.5">
         {title}
       </p>
       <ul className="space-y-2">
@@ -362,7 +362,7 @@ function RedFlag({
             <div
               className={`h-[6px] w-[6px] rounded-full ${s.dot} mt-[7px] shrink-0`}
             />
-            <p className="text-[13px] text-[#5c5245] leading-relaxed">
+            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
               {item}
             </p>
           </li>
@@ -390,21 +390,21 @@ function EscalationStep({
   tip: string;
 }) {
   return (
-    <div className="rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] p-4">
+    <div className="rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] p-4">
       <div className="flex items-center gap-3 mb-2">
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[12px] font-bold text-[#6b5e50] shadow-sm">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[12px] font-bold text-[var(--text-secondary)] shadow-sm">
           {number}
         </div>
-        <p className="text-[14px] font-semibold text-[#2e2a25]">{title}</p>
+        <p className="text-[14px] font-semibold text-[var(--text-primary)]">{title}</p>
       </div>
       <div className="ml-10 space-y-1.5">
-        <p className="text-[12px] text-[#8a7d6e]">
-          <strong className="text-[#6b5e50]">When:</strong> {when}
+        <p className="text-[12px] text-[var(--text-tertiary)]">
+          <strong className="text-[var(--text-secondary)]">When:</strong> {when}
         </p>
-        <p className="text-[12px] text-[#8a7d6e]">
-          <strong className="text-[#6b5e50]">Why:</strong> {why}
+        <p className="text-[12px] text-[var(--text-tertiary)]">
+          <strong className="text-[var(--text-secondary)]">Why:</strong> {why}
         </p>
-        <p className="text-[12px] text-[#7da37d] font-medium">💡 {tip}</p>
+        <p className="text-[12px] text-[var(--accent)] font-medium">💡 {tip}</p>
       </div>
     </div>
   );
@@ -425,19 +425,19 @@ function ScriptCard({ context, script }: { context: string; script: string }) {
   };
 
   return (
-    <div className="rounded-xl bg-white border border-[#e8e2d8] p-4">
+    <div className="rounded-xl bg-white border border-[var(--warm-300)] p-4">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#b0a697]">
+        <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
           {context}
         </p>
         <button
           onClick={handleCopy}
-          className="text-[11px] font-medium text-[#8a7d6e] hover:text-[#3d5a3d] transition"
+          className="text-[11px] font-medium text-[var(--text-tertiary)] hover:text-[var(--accent-dark)] transition"
         >
           {copied ? "✓ Copied" : "Copy"}
         </button>
       </div>
-      <p className="text-[13px] text-[#2e2a25] leading-relaxed italic">
+      <p className="text-[13px] text-[var(--text-primary)] leading-relaxed italic">
         &quot;{script}&quot;
       </p>
     </div>
@@ -458,11 +458,11 @@ function LocationType({
   details: string;
 }) {
   return (
-    <div className="flex gap-3.5 items-start rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] p-4">
+    <div className="flex gap-3.5 items-start rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] p-4">
       <span className="text-[18px] shrink-0 mt-0.5">{icon}</span>
       <div>
-        <p className="text-[13px] font-semibold text-[#2e2a25]">{name}</p>
-        <p className="text-[12px] text-[#8a7d6e] leading-relaxed mt-0.5">
+        <p className="text-[13px] font-semibold text-[var(--text-primary)]">{name}</p>
+        <p className="text-[12px] text-[var(--text-tertiary)] leading-relaxed mt-0.5">
           {details}
         </p>
       </div>

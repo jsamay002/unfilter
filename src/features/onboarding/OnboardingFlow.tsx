@@ -39,13 +39,13 @@ export default function OnboardingFlow() {
   const showProgress = step !== "welcome" && step !== "complete";
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[#faf8f4]">
+    <div className="min-h-[100dvh] flex flex-col bg-[var(--bg-primary)]">
       {/* Progress bar */}
       {showProgress && (
-        <div className="sticky top-0 z-50 bg-[#faf8f4]/80 backdrop-blur-md border-b border-[#eae5dd]/60">
+        <div className="sticky top-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-md border-b border-[var(--border)]/60">
           <div className="max-w-lg mx-auto px-6 py-3 flex items-center gap-3">
             {/* Logo */}
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#3d5a3d] shrink-0">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--accent-dark)] shrink-0">
               <span className="text-white text-[11px] font-bold" style={{ fontFamily: "Outfit" }}>U</span>
             </div>
 
@@ -60,10 +60,10 @@ export default function OnboardingFlow() {
                     <div
                       className={`h-[3px] rounded-full transition-all duration-500 ${
                         isDone
-                          ? "bg-[#3d5a3d]"
+                          ? "bg-[var(--accent-dark)]"
                           : isActive
-                            ? "bg-[#7da37d]"
-                            : "bg-[#e0dbd3]"
+                            ? "bg-[var(--accent)]"
+                            : "bg-[var(--border)]"
                       }`}
                     />
                   </div>
@@ -72,7 +72,7 @@ export default function OnboardingFlow() {
             </div>
 
             {/* Step count */}
-            <p className="text-[11px] font-medium text-[#b0a697] tabular-nums shrink-0">
+            <p className="text-[11px] font-medium text-[var(--text-muted)] tabular-nums shrink-0">
               {Math.min(currentIdx, 4)}/4
             </p>
           </div>

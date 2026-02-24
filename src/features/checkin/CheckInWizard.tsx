@@ -149,10 +149,10 @@ export default function CheckInWizard() {
       {step === "capture" && (
         <div className="mt-6 animate-fade-up">
           <div className="card p-5">
-            <h2 className="text-heading text-[18px] text-[#2e2a25] mb-1">
+            <h2 className="text-heading text-[18px] text-[var(--text-primary)] mb-1">
               New Check-in
             </h2>
-            <p className="text-[13px] text-[#8a7d6e] mb-4">
+            <p className="text-[13px] text-[var(--text-tertiary)] mb-4">
               Take or upload a photo of the area you want guidance on. Crop
               close to the affected area — no need to include your full face.
             </p>
@@ -167,18 +167,18 @@ export default function CheckInWizard() {
                 />
                 <button
                   onClick={handleRetake}
-                  className="absolute top-2 right-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-medium text-[#6b5e50] backdrop-blur shadow-sm hover:bg-white transition"
+                  className="absolute top-2 right-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-medium text-[var(--text-secondary)] backdrop-blur shadow-sm hover:bg-white transition"
                 >
                   ✕ Remove
                 </button>
               </div>
             ) : (
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#d8d0c4] py-14 transition hover:border-[#a3bfa3] hover:bg-[#f7f4ef]">
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--border-hover)] py-14 transition hover:border-[var(--accent)] hover:bg-[var(--warm-100)]">
                 <span className="text-3xl mb-2">📷</span>
-                <span className="text-[14px] font-medium text-[#6b5e50]">
+                <span className="text-[14px] font-medium text-[var(--text-secondary)]">
                   Tap to take or upload a photo
                 </span>
-                <span className="text-[12px] text-[#b0a697] mt-1">
+                <span className="text-[12px] text-[var(--text-muted)] mt-1">
                   EXIF data is stripped · stays on your device
                 </span>
                 <input
@@ -191,7 +191,7 @@ export default function CheckInWizard() {
               </label>
             )}
 
-            <div className="mt-3 flex items-center gap-2 text-[12px] text-[#b0a697]">
+            <div className="mt-3 flex items-center gap-2 text-[12px] text-[var(--text-muted)]">
               <span>🔒</span>
               <span>Analyzed on-device. Never uploaded anywhere.</span>
             </div>
@@ -278,15 +278,15 @@ function StepBar({ current }: { current: CheckInStep }) {
             <div
               className={`h-[3px] rounded-full transition-all duration-500 ${
                 isDone
-                  ? "bg-[#3d5a3d]"
+                  ? "bg-[var(--accent-dark)]"
                   : isActive
-                    ? "bg-[#7da37d]"
-                    : "bg-[#e0dbd3]"
+                    ? "bg-[var(--accent)]"
+                    : "bg-[var(--border)]"
               }`}
             />
             <p
               className={`mt-1 text-center text-[10px] font-semibold ${
-                isActive ? "text-[#2e2a25]" : "text-[#b0a697]"
+                isActive ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"
               }`}
             >
               {s.label}

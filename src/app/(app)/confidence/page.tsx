@@ -32,13 +32,13 @@ export default function ConfidencePage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-3xl">
           {/* Header */}
           <div className="mb-6 animate-fade-up">
-            <h1 className="text-heading text-[24px] text-[#2e2a25]">
+            <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)]">
               Confidence Mode
             </h1>
-            <p className="mt-1 text-[14px] text-[#8a7d6e]">
+            <p className="mt-1 text-[15px] text-[var(--text-secondary)]">
               Real skin. Real talk. No filters needed.
             </p>
           </div>
@@ -46,19 +46,19 @@ export default function ConfidencePage() {
           {/* Daily card */}
           <div className="mb-6 animate-fade-up stagger-1">
             <SectionLabel>Today&apos;s reminder</SectionLabel>
-            <div className="card-elevated p-5 border-l-[3px] border-l-[#7da37d]">
+            <div className="card-elevated p-5 border-l-[3px] border-l-[var(--accent)]">
               <div className="flex items-center gap-2.5 mb-3">
                 <span className="text-[24px]">{dailyCard.emoji}</span>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#b0a697]">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
                     Daily card
                   </p>
-                  <h3 className="text-[16px] font-semibold text-[#2e2a25]">
+                  <h3 className="text-[16px] font-semibold text-[var(--text-primary)]">
                     {dailyCard.title}
                   </h3>
                 </div>
               </div>
-              <p className="text-[14px] text-[#5c5245] leading-[1.7]">
+              <p className="text-[14px] text-[var(--text-secondary)] leading-[1.7]">
                 {dailyCard.content}
               </p>
             </div>
@@ -102,10 +102,10 @@ export default function ConfidencePage() {
                     className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left`}
                   >
                     <span className="text-[20px]">{meta.icon}</span>
-                    <p className="text-[13px] font-semibold text-[#2e2a25] mt-2">
+                    <p className="text-[13px] font-semibold text-[var(--text-primary)] mt-2">
                       {meta.label}
                     </p>
-                    <p className="text-[11px] text-[#8a7d6e] mt-0.5">
+                    <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
                       {meta.desc}
                     </p>
                   </button>
@@ -171,11 +171,11 @@ function CardItem({
       <div className="flex items-center gap-3">
         <span className="text-[20px] shrink-0">{card.emoji}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-semibold text-[#2e2a25]">
+          <p className="text-[14px] font-semibold text-[var(--text-primary)]">
             {card.title}
           </p>
           {!expanded && (
-            <p className="text-[12px] text-[#8a7d6e] mt-0.5 truncate">
+            <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5 truncate">
               {card.content.slice(0, 80)}…
             </p>
           )}
@@ -185,7 +185,7 @@ function CardItem({
           height="14"
           viewBox="0 0 14 14"
           fill="none"
-          className={`text-[#c4bbb0] shrink-0 transition-transform ${
+          className={`text-[var(--text-muted)] shrink-0 transition-transform ${
             expanded ? "rotate-90" : ""
           }`}
         >
@@ -199,7 +199,7 @@ function CardItem({
         </svg>
       </div>
       {expanded && (
-        <p className="mt-3 text-[14px] text-[#5c5245] leading-[1.7]">
+        <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.7]">
           {card.content}
         </p>
       )}
@@ -225,8 +225,8 @@ function FilterChip({
       onClick={onClick}
       className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold transition-all ${
         active
-          ? "bg-[#3d5a3d] text-white shadow-sm"
-          : "bg-[#f0ede7] text-[#6b5e50] hover:bg-[#e8e2d8]"
+          ? "bg-[var(--accent-dark)] text-white shadow-sm"
+          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--warm-300)]"
       }`}
     >
       <span className="text-[13px]">{icon}</span>

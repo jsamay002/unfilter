@@ -24,16 +24,16 @@ export function PrivacyStep({ onAccept, onDecline }: PrivacyStepProps) {
     <div className="max-w-lg mx-auto px-6 py-8">
       {/* Header */}
       <div className="mb-6 animate-fade-up">
-        <h2 className="text-heading text-[22px] text-[#2e2a25] mb-1">
+        <h2 className="text-heading text-[22px] text-[var(--text-primary)] mb-1">
           Terms &amp; Privacy
         </h2>
-        <p className="text-[13px] text-[#8a7d6e]">
+        <p className="text-[13px] text-[var(--text-tertiary)]">
           Please review before continuing. Last updated February 2026.
         </p>
       </div>
 
       {/* Tab switcher */}
-      <div className="flex border-b border-[#e0dbd3] mb-0 animate-fade-up stagger-1">
+      <div className="flex border-b border-[var(--border)] mb-0 animate-fade-up stagger-1">
         <TabButton
           active={tab === "terms"}
           onClick={() => { setTab("terms"); setScrolledToBottom(false); }}
@@ -52,7 +52,7 @@ export function PrivacyStep({ onAccept, onDecline }: PrivacyStepProps) {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="h-[380px] overflow-y-auto border border-t-0 border-[#e0dbd3] bg-white rounded-b-2xl px-5 py-5 text-[13px] leading-[1.7] text-[#4a4440] animate-fade-up stagger-2"
+        className="h-[380px] overflow-y-auto border border-t-0 border-[var(--border)] bg-white rounded-b-2xl px-5 py-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] animate-fade-up stagger-2"
       >
         {tab === "terms" ? <TermsContent /> : <PrivacyContent />}
       </div>
@@ -60,16 +60,16 @@ export function PrivacyStep({ onAccept, onDecline }: PrivacyStepProps) {
       {/* Scroll hint */}
       {!scrolledToBottom && (
         <div className="flex items-center justify-center gap-1.5 mt-2 animate-fade-in">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[#b0a697]">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[var(--text-muted)]">
             <path d="M6 2v8M3 7l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <p className="text-[11px] text-[#b0a697]">Scroll to review</p>
+          <p className="text-[11px] text-[var(--text-muted)]">Scroll to review</p>
         </div>
       )}
 
       {/* Agreement notice */}
-      <div className="mt-5 rounded-xl bg-[#f7f4ef] border border-[#e8e2d8] px-4 py-3 animate-fade-up stagger-3">
-        <p className="text-[12px] text-[#5c5245] leading-relaxed">
+      <div className="mt-5 rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] px-4 py-3 animate-fade-up stagger-3">
+        <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
           By tapping &quot;I Agree,&quot; you confirm that you have read and
           agree to the Terms of Service and Privacy Policy. If you are under 18,
           you confirm that your parent or legal guardian has reviewed and
@@ -97,7 +97,7 @@ export function PrivacyStep({ onAccept, onDecline }: PrivacyStepProps) {
 function TermsContent() {
   return (
     <div className="space-y-5">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.05em] text-[#8a7d6e]">
+      <p className="text-[12px] font-semibold uppercase tracking-[0.05em] text-[var(--text-tertiary)]">
         Effective Date: February 2026
       </p>
 
@@ -216,7 +216,7 @@ function TermsContent() {
 function PrivacyContent() {
   return (
     <div className="space-y-5">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.05em] text-[#8a7d6e]">
+      <p className="text-[12px] font-semibold uppercase tracking-[0.05em] text-[var(--text-tertiary)]">
         Effective Date: February 2026
       </p>
 
@@ -349,8 +349,8 @@ function Section({
 }) {
   return (
     <div>
-      <h3 className="text-[13px] font-bold text-[#2e2a25] mb-1.5">{title}</h3>
-      <div className="text-[12.5px] leading-[1.75] text-[#4a4440]">
+      <h3 className="text-[13px] font-bold text-[var(--text-primary)] mb-1.5">{title}</h3>
+      <div className="text-[12.5px] leading-[1.75] text-[var(--text-secondary)]">
         {children}
       </div>
     </div>
@@ -374,8 +374,8 @@ function TabButton({
         border-b-2 -mb-px
         ${
           active
-            ? "border-[#3d5a3d] text-[#2e2a25]"
-            : "border-transparent text-[#b0a697] hover:text-[#6b5e50]"
+            ? "border-[var(--accent-dark)] text-[var(--text-primary)]"
+            : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
         }
       `}
     >
