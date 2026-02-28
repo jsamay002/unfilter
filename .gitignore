@@ -12,3 +12,12 @@ pnpm-debug.log*
 .DS_Store
 .next
 .next/
+# Auth database (contains hashed credentials — never commit)
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# Environment
+.env.local
+.env*.local

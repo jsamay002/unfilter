@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuthStore } from "@/features/auth/store";
 import {
   IconHome,
   IconCamera,
@@ -32,6 +33,13 @@ const BOTTOM_ITEMS = [
 
 export function SideNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace("/login");
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-[260px] shrink-0 border-r border-[var(--border-light)] bg-white/50 backdrop-blur-sm h-screen sticky top-0">
@@ -97,8 +105,30 @@ export function SideNav() {
           );
         })}
 
+        {/* User + logout */}
+        {user && (
+          <div className="mt-3 mx-1 rounded-[14px] bg-[var(--warm-200)] px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold text-[var(--text-primary)] truncate">
+                  {user.username}
+                </p>
+                <p className="text-[11px] text-[var(--text-tertiary)] truncate">
+                  {user.email}
+                </p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition shrink-0 ml-2"
+              >
+                Log out
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Privacy badge */}
-        <div className="mt-4 mx-1 rounded-[14px] card-gradient-sage px-4 py-3.5">
+        <div className="mt-2 mx-1 rounded-[14px] card-gradient-sage px-4 py-3.5">
           <div className="flex items-center gap-2.5">
             <IconShield size={16} className="text-[var(--accent)]" />
             <div>
