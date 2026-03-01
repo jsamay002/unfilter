@@ -21,3 +21,8 @@ data/
 # Environment
 .env.local
 .env*.local
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+ios/DerivedData/
+ios/*.xcodeproj
+ios/build/
