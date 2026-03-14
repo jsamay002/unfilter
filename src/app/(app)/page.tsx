@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
-import { OnDeviceBadge } from "@/components/OnDeviceBadge";
 import { DistortionDemo } from "@/components/DistortionDemo";
 import {
   IconCamera,
@@ -18,125 +17,113 @@ export default function HomePage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-4xl">
-          {/* Hero */}
-          <section className="mb-8 animate-fade-up">
-            <p className="mb-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--accent)]">
-              Privacy-First Digital Skin Literacy
-            </p>
-            <h1 className="text-display text-[clamp(34px,6vw,56px)] text-[var(--text-primary)]">
+        <div className="mx-auto max-w-3xl">
+          {/* Editorial hero */}
+          <section className="mb-12 animate-fade-up">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                Skin Literacy Platform
+              </span>
+              <div className="h-px flex-1 bg-gradient-to-l from-[var(--border)] to-transparent" />
+            </div>
+            <h1 className="text-display text-[clamp(36px,7vw,60px)] text-[var(--text-primary)] text-center">
               See Skin Clearly.
             </h1>
-            <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[var(--text-secondary)]">
+            <p className="mt-5 mx-auto max-w-lg text-center text-[16px] leading-[1.7] text-[var(--text-tertiary)]">
               Filters hide what real skin looks like. Unfilter shows you the
-              difference — and protects you from skincare trends that do more
-              harm than good.
+              difference&mdash;and protects you from skincare trends that do
+              more harm than good.
             </p>
           </section>
 
           {/* Distortion Demo — the 60-second hook */}
-          <section className="mb-8 animate-fade-up stagger-1">
+          <section className="mb-14 animate-fade-up stagger-1">
             <DistortionDemo />
           </section>
 
-          {/* Three pillar CTAs */}
-          <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 animate-fade-up stagger-2">
-            <PrimaryAction
-              href="/lab"
-              icon={<IconCamera size={18} />}
-              label="Full Distortion Lab"
-            />
-            <PrimaryAction
-              href="/routine"
-              icon={<IconShield size={18} />}
-              label="Barrier Safety"
-            />
-            <PrimaryAction
-              href="/journal"
-              icon={<IconJournal size={18} />}
-              label="Skin Journal"
-            />
-          </section>
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-14" />
 
-          {/* Privacy badge */}
-          <section className="mb-8 animate-fade-up stagger-3">
-            <OnDeviceBadge />
-            <p className="mt-2 text-[12px] text-[var(--text-muted)]">
-              Photos never leave your device. Auto-delete is enabled by default.
+          {/* Three pillars — editorial row */}
+          <section className="mb-14 animate-fade-up stagger-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-6">
+              Core Tools
             </p>
-          </section>
-
-          {/* Core systems */}
-          <section className="mb-8 animate-fade-up stagger-4">
-            <h2 className="mb-3 text-title text-[20px] text-[var(--text-primary)]">
-              Core Systems
-            </h2>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              <SystemCard
-                title="Distortion Lab"
-                description="See how smoothing, lighting, and contrast distort real skin side-by-side."
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <PillarCard
                 href="/lab"
-                icon={<IconCamera size={18} />}
+                icon={<IconCamera size={20} />}
+                title="Distortion Lab"
+                desc="See how smoothing, lighting, and contrast distort real skin."
+                accent="sage"
               />
-              <SystemCard
-                title="Barrier Safety Copilot"
-                description="Warns about ingredient overuse, conflicts, and risky TikTok stacking."
+              <PillarCard
                 href="/routine"
-                icon={<IconShield size={18} />}
+                icon={<IconShield size={20} />}
+                title="Barrier Safety"
+                desc="Warns about ingredient overuse, conflicts, and risky stacking."
+                accent="coral"
               />
-              <SystemCard
-                title="Confidence & Skin Journal"
-                description="Track confidence patterns, routine changes, and skin observations over time."
+              <PillarCard
                 href="/journal"
-                icon={<IconJournal size={18} />}
+                icon={<IconJournal size={20} />}
+                title="Skin Journal"
+                desc="Track confidence, routine changes, and skin over time."
+                accent="gold"
               />
             </div>
           </section>
 
-          {/* Supporting systems */}
-          <section className="mb-8 animate-fade-up stagger-5">
-            <h2 className="mb-3 text-title text-[18px] text-[var(--text-primary)]">
-              Supporting Systems
-            </h2>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-              <SupportCard
-                title="On-Device Skin Insight"
-                description="Private capture and observation — no cloud upload."
+          {/* Privacy — inline editorial callout */}
+          <section className="mb-14 animate-fade-up stagger-3">
+            <div className="rounded-[var(--radius-lg)] bg-[var(--accent-lighter)] border border-[var(--accent-light)] px-6 py-5">
+              <div className="flex items-start gap-4">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--accent-light)]">
+                  <IconShield size={16} className="text-[var(--accent)]" />
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-[var(--accent-dark)]">
+                    100% On-Device Processing
+                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-[var(--text-tertiary)]">
+                    Photos never leave your device. No cloud uploads. Auto-delete
+                    enabled by default. Your skin data stays yours.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Supporting tools — quieter, editorial list */}
+          <section className="mb-14 animate-fade-up stagger-4">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-5">
+              Learn &amp; Support
+            </p>
+            <div className="space-y-1">
+              <EditorialLink
                 href="/check-in"
-                icon={<IconSparkle size={17} />}
+                icon={<IconSparkle size={16} />}
+                title="On-Device Skin Insight"
+                desc="Private capture and observation"
               />
-              <SupportCard
-                title="Help & Escalation"
-                description="Red flags, conversation scripts, and who to talk to."
-                href="/help"
-                icon={<IconSparkle size={17} />}
-              />
-              <SupportCard
-                title="Learn Hub"
-                description="Myth-busting and practical skin literacy content."
+              <EditorialLink
                 href="/learn"
-                icon={<IconBook size={17} />}
+                icon={<IconBook size={16} />}
+                title="Learn Hub"
+                desc="Myth-busting and practical skin literacy"
               />
-            </div>
-          </section>
-
-          {/* Infrastructure */}
-          <section className="animate-fade-up stagger-6">
-            <h2 className="mb-3 text-title text-[18px] text-[var(--text-primary)]">
-              Infrastructure
-            </h2>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <SupportCard
-                title="Accessibility + Privacy Controls"
-                description="Text size, dark mode, high contrast, data export and deletion."
-                href="/settings"
-                icon={<IconSettings size={17} />}
+              <EditorialLink
+                href="/help"
+                icon={<IconSparkle size={16} />}
+                title="Help & Escalation"
+                desc="Red flags, conversation scripts, and resources"
               />
-              <SupportCard
-                title="Authentication"
-                description="Account access with local-only data management."
+              <EditorialLink
                 href="/settings"
-                icon={<IconSettings size={17} />}
+                icon={<IconSettings size={16} />}
+                title="Settings"
+                desc="Accessibility, privacy controls, and account"
               />
             </div>
           </section>
@@ -146,80 +133,73 @@ export default function HomePage() {
   );
 }
 
-function PrimaryAction({
+function PillarCard({
   href,
-  label,
   icon,
-}: {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="btn-primary justify-center px-5 py-4 text-[15px]"
-    >
-      {icon}
-      {label}
-    </Link>
-  );
-}
-
-function SystemCard({
   title,
-  description,
-  href,
-  icon,
+  desc,
+  accent,
 }: {
-  title: string;
-  description: string;
   href: string;
   icon: React.ReactNode;
+  title: string;
+  desc: string;
+  accent: "sage" | "coral" | "gold";
 }) {
+  const iconBg = {
+    sage: "bg-[var(--accent-light)] text-[var(--accent)]",
+    coral: "bg-[var(--coral-light)] text-[var(--coral)]",
+    gold: "bg-[var(--gold-light)] text-[var(--gold)]",
+  }[accent];
+
   return (
     <Link
       href={href}
-      className="card-interactive block rounded-[var(--radius-md)] p-4"
+      className="card-interactive block rounded-[var(--radius-md)] p-5"
     >
-      <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-[10px] bg-[var(--accent-light)] text-[var(--accent-dark)]">
+      <div
+        className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-[10px] ${iconBg}`}
+      >
         {icon}
       </div>
-      <h3 className="text-[15px] font-semibold text-[var(--text-primary)]">
+      <h3 className="text-[15px] font-semibold text-[var(--text-primary)] leading-snug">
         {title}
       </h3>
-      <p className="mt-1 text-[13px] leading-relaxed text-[var(--text-secondary)]">
-        {description}
+      <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-tertiary)]">
+        {desc}
       </p>
     </Link>
   );
 }
 
-function SupportCard({
-  title,
-  description,
+function EditorialLink({
   href,
   icon,
+  title,
+  desc,
 }: {
-  title: string;
-  description: string;
   href: string;
   icon: React.ReactNode;
+  title: string;
+  desc: string;
 }) {
   return (
     <Link
       href={href}
-      className="card block rounded-[var(--radius-md)] p-4 hover:bg-[var(--bg-card)] transition-colors"
+      className="group flex items-center gap-4 rounded-[var(--radius-sm)] px-4 py-3.5 transition-colors hover:bg-[var(--bg-secondary)]"
     >
-      <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--warm-200)] text-[var(--text-primary)]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[var(--warm-200)] text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)] transition-colors">
         {icon}
       </div>
-      <h3 className="text-[14px] font-semibold text-[var(--text-primary)]">
-        {title}
-      </h3>
-      <p className="mt-1 text-[12px] leading-relaxed text-[var(--text-tertiary)]">
-        {description}
-      </p>
+      <div className="min-w-0 flex-1">
+        <p className="text-[14px] font-semibold text-[var(--text-primary)]">
+          {title}
+        </p>
+        <p className="text-[12px] text-[var(--text-muted)]">{desc}</p>
+      </div>
+      <span className="text-[var(--text-muted)] group-hover:text-[var(--text-tertiary)] transition-colors text-[13px]">
+        &rarr;
+      </span>
     </Link>
   );
 }

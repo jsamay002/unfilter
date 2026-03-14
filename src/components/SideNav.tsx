@@ -43,47 +43,48 @@ export function SideNav() {
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-[260px] shrink-0 border-r border-[var(--border-light)] bg-[var(--bg-elevated)]/80 backdrop-blur-sm h-screen sticky top-0">
+    <aside className="hidden md:flex flex-col w-[240px] shrink-0 border-r border-[var(--border-light)] bg-[var(--bg-primary)] h-screen sticky top-0">
       {/* Logo */}
-      <div className="px-6 pt-7 pb-6">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[var(--accent)] shadow-md shadow-[var(--accent-glow)]">
-            <span className="text-white text-[17px] font-bold" style={{ fontFamily: "Fraunces" }}>
+      <div className="px-5 pt-6 pb-5">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--accent)]">
+            <span className="text-white text-[13px] font-bold" style={{ fontFamily: "Fraunces" }}>
               U
             </span>
           </div>
-          <div>
-            <span className="text-display text-[20px] text-[var(--text-primary)]">
-              Unfilter
-            </span>
-          </div>
+          <span className="text-display text-[18px] text-[var(--text-primary)]">
+            Unfilter
+          </span>
         </Link>
       </div>
 
+      {/* Divider */}
+      <div className="mx-5 h-px bg-[var(--border-light)]" />
+
       {/* Main nav */}
-      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-        <NavSection label="Core Systems" items={CORE_ITEMS} pathname={pathname} />
-        <NavSection label="Supporting Systems" items={SUPPORT_ITEMS} pathname={pathname} />
-        <NavSection label="Infrastructure" items={INFRA_ITEMS} pathname={pathname} />
+      <nav className="flex-1 px-3 pt-4 space-y-0.5 overflow-y-auto">
+        <NavSection label="Core" items={CORE_ITEMS} pathname={pathname} />
+        <NavSection label="Support" items={SUPPORT_ITEMS} pathname={pathname} />
+        <NavSection label="" items={INFRA_ITEMS} pathname={pathname} />
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-[var(--border-light)] px-4 py-4 space-y-1">
+      <div className="px-3 pb-4 space-y-2">
         {/* User + logout */}
         {user && (
-          <div className="mt-3 mx-1 rounded-[14px] bg-[var(--warm-200)] px-4 py-3">
+          <div className="mx-1 rounded-[12px] bg-[var(--bg-secondary)] px-3.5 py-2.5">
             <div className="flex items-center justify-between">
               <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-[var(--text-primary)] truncate">
+                <p className="text-[12px] font-semibold text-[var(--text-primary)] truncate">
                   {user.username}
                 </p>
-                <p className="text-[11px] text-[var(--text-tertiary)] truncate">
+                <p className="text-[10px] text-[var(--text-muted)] truncate">
                   {user.email}
                 </p>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition shrink-0 ml-2"
+                className="text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition shrink-0 ml-2"
               >
                 Log out
               </button>
@@ -92,17 +93,12 @@ export function SideNav() {
         )}
 
         {/* Privacy badge */}
-        <div className="mt-2 mx-1 rounded-[14px] card-gradient-sage px-4 py-3.5">
-          <div className="flex items-center gap-2.5">
-            <IconShield size={16} className="text-[var(--accent)]" />
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--accent)]">
-                100% On-Device
-              </p>
-              <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                Photos never leave your device
-              </p>
-            </div>
+        <div className="mx-1 rounded-[12px] border border-[var(--accent-light)] bg-[var(--accent-lighter)] px-3.5 py-2.5">
+          <div className="flex items-center gap-2">
+            <IconShield size={14} className="text-[var(--accent)] shrink-0" />
+            <p className="text-[11px] font-medium text-[var(--accent-dark)]">
+              100% On-Device
+            </p>
           </div>
         </div>
       </div>
@@ -126,10 +122,12 @@ function NavSection({
   pathname: string;
 }) {
   return (
-    <div className="mb-3">
-      <p className="px-4 pt-2 pb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">
-        {label}
-      </p>
+    <div className="mb-2">
+      {label && (
+        <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">
+          {label}
+        </p>
+      )}
       {items.map((item) => {
         const active = pathname === item.href;
         const Icon = item.icon;
@@ -137,17 +135,14 @@ function NavSection({
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3.5 rounded-[12px] px-4 py-3 text-[15px] font-medium transition-all ${
+            className={`flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13px] font-medium transition-all ${
               active
                 ? "bg-[var(--accent-light)] text-[var(--accent-dark)]"
-                : "text-[var(--text-secondary)] hover:bg-[var(--warm-200)] hover:text-[var(--text-primary)]"
+                : "text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
-            <Icon size={20} className={active ? "text-[var(--accent)]" : ""} />
+            <Icon size={17} className={active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"} />
             <span>{item.label}</span>
-            {active && (
-              <div className="ml-auto h-2 w-2 rounded-full bg-[var(--accent)]" />
-            )}
           </Link>
         );
       })}
