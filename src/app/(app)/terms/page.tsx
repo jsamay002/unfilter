@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { PrivacyStep } from "@/features/onboarding/steps/PrivacyStep";
 import { useAuthStore } from "@/features/auth/store";
+import { resetPreferences } from "@/features/settings/preferences";
 
 export default function TermsPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function TermsPage() {
   };
 
   const handleDecline = async () => {
-    // Sign out and go back to login — can't use the app without accepting
+    resetPreferences();
     await logout();
     router.replace("/login");
   };

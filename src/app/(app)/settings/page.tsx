@@ -11,6 +11,7 @@ import {
   applyPreferencesToDocument,
   getDefaultPreferences,
   loadPreferences,
+  resetPreferences,
   savePreferences,
 } from "@/features/settings/preferences";
 
@@ -71,15 +72,13 @@ export default function SettingsPage() {
 
   const handleLogout = useCallback(async (saveData: boolean) => {
     if (!saveData) {
-      // Clear all unfilter local data before logging out
       for (let i = window.localStorage.length - 1; i >= 0; i -= 1) {
         const key = window.localStorage.key(i);
         if (!key || !key.startsWith("unfilter-")) continue;
-        // Keep preferences (accessibility settings) — clear everything else
-        if (key === "unfilter-preferences") continue;
         window.localStorage.removeItem(key);
       }
     }
+    resetPreferences();
     await logout();
     router.replace("/login");
   }, [logout, router]);

@@ -71,6 +71,12 @@ export function applyPreferencesToDocument(preferences: AccessibilityPreferences
   document.documentElement.setAttribute("data-contrast", preferences.contrast);
 }
 
+export function resetPreferences(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(STORAGE_KEY);
+  applyPreferencesToDocument(DEFAULT_PREFERENCES);
+}
+
 export function getPreferencesStorageKey(): string {
   return STORAGE_KEY;
 }

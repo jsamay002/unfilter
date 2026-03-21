@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store";
 import { IconSettings } from "@/components/icons";
+import { resetPreferences } from "@/features/settings/preferences";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -19,6 +20,7 @@ export function TopHeader({ sidebarOpen, onToggle }: TopHeaderProps) {
     : "??";
 
   const handleLogout = async () => {
+    resetPreferences();
     await logout();
     router.replace("/login");
   };

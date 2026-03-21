@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from "@/features/auth/store";
 import { IconShield } from "@/components/icons";
+import { applyPreferencesToDocument, getDefaultPreferences } from "@/features/settings/preferences";
 
 function LoginForm() {
   const router = useRouter();
@@ -16,6 +17,10 @@ function LoginForm() {
   const [errors, setErrors] = useState<string[]>([]);
   const [showVerified, setShowVerified] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
+
+  useEffect(() => {
+    applyPreferencesToDocument(getDefaultPreferences());
+  }, []);
 
   useEffect(() => {
     if (searchParams.get("verified") === "true") {
