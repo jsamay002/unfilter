@@ -78,7 +78,7 @@ export function checkOrigin(req: NextRequest): boolean {
   // In development, allow requests without origin (e.g. Postman, curl)
   if (process.env.NODE_ENV !== "production") return true;
 
-  const appOrigin = new URL(APP_URL).origin;
+  const appOrigin =  new URL(APP_URL).origin;
 
   if (origin) return origin === appOrigin;
   if (referer) {

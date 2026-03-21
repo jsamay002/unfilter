@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import {
@@ -9,132 +10,155 @@ import {
   IconShield,
   IconSparkle,
   IconBook,
+  IconArrowRight,
 } from "@/components/icons";
 import { useAuthStore } from "@/features/auth/store";
 
 export default function HomePage() {
   const { user } = useAuthStore();
-  const firstName = user?.username?.split(" ")[0] ?? "there";
+  const router = useRouter();
+  const firstName = user?.username ?? "there";
 
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-2xl">
-          {/* Privacy banner — top of page */}
-          <div className="mb-8 flex items-center gap-3 rounded-[12px] border border-[var(--accent-light)] bg-[var(--accent-lighter)] px-4 py-3 animate-fade-up">
-            <IconShield size={16} className="text-[var(--accent)] shrink-0" />
-            <p className="text-[12px] font-medium text-[var(--accent-dark)]">
-              100% on-device processing. Photos never leave this device.
-            </p>
-          </div>
+        <div className="mx-auto max-w-xl">
+          {/* Greeting — quiet, personal */}
+          <p className="text-[13px] text-[var(--text-muted)] mb-6 animate-fade-up">
+            Hi {firstName}
+          </p>
 
-          {/* Warm welcome — not a wall of text */}
+          {/* Hero — one dominant message, one dominant action */}
           <section className="mb-10 animate-fade-up stagger-1">
-            <p className="text-[13px] font-medium text-[var(--accent)] mb-2">
-              Welcome back, {firstName}
-            </p>
-            <h1 className="text-display text-[clamp(28px,5vw,42px)] text-[var(--text-primary)] leading-tight">
-              What would you like<br />to explore today?
+            <h1 className="text-display text-[clamp(30px,6vw,48px)] text-[var(--text-primary)] leading-[1.1] mb-4">
+              See what filters<br />
+              <span className="gradient-text">actually do.</span>
             </h1>
-          </section>
+            <p className="text-[16px] leading-relaxed text-[var(--text-secondary)] max-w-md mb-8">
+              Upload a selfie and watch it change in real time.
+              Everything stays on your device.
+            </p>
 
-          {/* Core actions — clean, spaced, inviting */}
-          <section className="mb-10 space-y-3 animate-fade-up stagger-2">
-            <ActionCard
-              href="/lab"
-              icon={<IconCamera size={22} />}
-              iconBg="bg-[var(--accent-light)] text-[var(--accent)]"
-              title="Distortion Lab"
-              desc="See how filters really change your photos"
-            />
-            <ActionCard
-              href="/routine"
-              icon={<IconShield size={22} />}
-              iconBg="bg-[var(--coral-light)] text-[var(--coral)]"
-              title="Barrier Safety Copilot"
-              desc="Check your routine for ingredient conflicts"
-            />
-            <ActionCard
-              href="/journal"
-              icon={<IconJournal size={22} />}
-              iconBg="bg-[var(--gold-light)] text-[var(--gold)]"
-              title="Skin Journal"
-              desc="Track your skin and confidence over time"
-            />
+            {/* Primary CTA */}
+            <button
+              onClick={() => router.push("/lab")}
+              className="group w-full flex items-center justify-between rounded-[16px] bg-[var(--accent)] px-7 py-5 text-white transition-all hover:bg-[var(--accent-dark)] hover:shadow-lg hover:shadow-[var(--accent)]/15 active:scale-[0.99]"
+            >
+              <div className="text-left">
+                <p className="text-[18px] font-semibold mb-0.5">
+                  Try the Distortion Lab
+                </p>
+                <p className="text-[13px] text-white/70">
+                  See how beauty filters manipulate photos
+                </p>
+              </div>
+              <IconArrowRight size={22} className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            {/* Secondary CTA */}
+            <button
+              onClick={() => router.push("/lab?demo=true")}
+              className="mt-3 w-full rounded-[12px] border border-[var(--border-light)] bg-[var(--bg-card)] px-5 py-3.5 text-[14px] font-medium text-[var(--text-secondary)] transition hover:border-[var(--border-hover)] hover:bg-[var(--bg-secondary)]"
+            >
+              Use a demo image instead
+            </button>
           </section>
 
           {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-8" />
+          <div className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-8 animate-fade-up stagger-2" />
 
-          {/* Secondary links — quiet, not competing */}
-          <section className="mb-6 animate-fade-up stagger-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-3 px-1">
-              More
+          {/* Other tools — visually quiet, discoverable */}
+          <section className="animate-fade-up stagger-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)] mb-3">
+              Your tools
             </p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              <QuickLink href="/check-in" icon={<IconSparkle size={15} />} label="Check-In" />
-              <QuickLink href="/learn" icon={<IconBook size={15} />} label="Learn Hub" />
-              <QuickLink href="/confidence" icon={<IconSparkle size={15} />} label="Confidence" />
+            <div className="space-y-2">
+              <ToolRow
+                href="/routine"
+                icon={<IconShield size={18} />}
+                color="text-[var(--coral)]"
+                bg="bg-[var(--coral-light)]"
+                title="Barrier Safety Copilot"
+                desc="Check ingredients for conflicts"
+              />
+              <ToolRow
+                href="/journal"
+                icon={<IconJournal size={18} />}
+                color="text-[var(--gold)]"
+                bg="bg-[var(--gold-light)]"
+                title="Skin Journal"
+                desc="Track your skin over time"
+              />
+              <ToolRow
+                href="/check-in"
+                icon={<IconCamera size={18} />}
+                color="text-[var(--accent)]"
+                bg="bg-[var(--accent-light)]"
+                title="Check-In"
+                desc="Quick skin photo assessment"
+              />
+              <ToolRow
+                href="/learn"
+                icon={<IconBook size={18} />}
+                color="text-[var(--text-secondary)]"
+                bg="bg-[var(--bg-secondary)]"
+                title="Learn"
+                desc="Skin science in plain English"
+              />
+              <ToolRow
+                href="/confidence"
+                icon={<IconSparkle size={18} />}
+                color="text-[var(--amber)]"
+                bg="bg-[var(--gold-light)]"
+                title="Confidence"
+                desc="Media literacy + self-image"
+              />
             </div>
           </section>
+
+          {/* Privacy — bottom, subtle */}
+          <div className="mt-10 mb-4 flex items-center gap-2.5 justify-center animate-fade-in stagger-4">
+            <IconShield size={13} className="text-[var(--accent)]" />
+            <p className="text-[11px] text-[var(--text-muted)]">
+              Everything runs on your device. Nothing is uploaded.
+            </p>
+          </div>
         </div>
       </AppShell>
     </OnboardingGate>
   );
 }
 
-/* --- Action Card --- */
+/* --- Tool Row --- */
 
-function ActionCard({
+function ToolRow({
   href,
   icon,
-  iconBg,
+  color,
+  bg,
   title,
   desc,
 }: {
   href: string;
   icon: React.ReactNode;
-  iconBg: string;
+  color: string;
+  bg: string;
   title: string;
   desc: string;
 }) {
   return (
     <Link
       href={href}
-      className="group flex items-center gap-4 rounded-[14px] border border-[var(--border-light)] bg-[var(--bg-card)] px-5 py-4 transition-all hover:border-[var(--border-hover)] hover:shadow-sm"
+      className="group flex items-center gap-3.5 rounded-[12px] px-4 py-3 transition hover:bg-[var(--bg-secondary)]"
     >
-      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] ${iconBg}`}>
+      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] ${bg} ${color}`}>
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[15px] font-semibold text-[var(--text-primary)]">{title}</p>
-        <p className="text-[13px] text-[var(--text-tertiary)] mt-0.5">{desc}</p>
+        <p className="text-[14px] font-semibold text-[var(--text-primary)]">{title}</p>
+        <p className="text-[12px] text-[var(--text-muted)]">{desc}</p>
       </div>
-      <span className="text-[var(--text-muted)] group-hover:text-[var(--text-tertiary)] transition text-[14px] shrink-0">
-        &rarr;
-      </span>
-    </Link>
-  );
-}
-
-/* --- Quick Link --- */
-
-function QuickLink({
-  href,
-  icon,
-  label,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-2.5 rounded-[10px] bg-[var(--bg-secondary)] px-3.5 py-3 text-[12px] font-medium text-[var(--text-secondary)] hover:bg-[var(--warm-300)] transition"
-    >
-      <span className="text-[var(--text-muted)]">{icon}</span>
-      {label}
+      <IconArrowRight size={14} className="text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition shrink-0" />
     </Link>
   );
 }
