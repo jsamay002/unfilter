@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { IconCamera, IconShield, IconArrowRight, IconSparkle } from "@/components/icons";
-import { applyRetouch, type RetouchOptions, type BlemishRegion } from "@/lib/imaging/retouch";
+import { applyRetouch, type RetouchOptions, type BlemishRegion, type RetouchStats } from "@/lib/imaging/retouch";
 
 // ============================================================
 // Distortion Lab — Guided-first, progressive disclosure
@@ -120,6 +120,79 @@ const EDUCATION: Record<CategoryKey, { title: string; changed: string; matters: 
 };
 
 const CATEGORY_ORDER: CategoryKey[] = ["skinTexture", "faceShape", "lightingTone", "makeup"];
+
+/* ---------- Plain-language slider descriptions (teen-friendly + tech expandable) ---------- */
+
+type SliderMessage = { teen: string; tech: string };
+
+function getSliderMessage(key: CategoryKey, value: number): SliderMessage | null {
+  if (value <= 5) return null;
+
+  const messages: Record<CategoryKey, (v: number) => SliderMessage> = {
+    skinTexture: (v) => {
+      if (v <= 25) return {
+        teen: "Light smoothing — your pores are getting softer. Most people wouldn't notice.",
+        tech: `Bilateral filter (radius ${Math.ceil((3 + (v / 100) * 7) * 1.5)}px, color sigma ${Math.round(15 + (v / 100) * 45)}). Averages nearby pixels only when colors are similar — edges preserved, micro-texture reduced.`,
+      };
+      if (v <= 50) return {
+        teen: "Your skin texture is fading. Pimples are getting harder to see. This is what Snapchat does by default.",
+        tech: `Bilateral filter + blemish detection active. Dark/red pixel clusters identified via local luminance comparison (threshold ${Math.round(30 - (v / 100) * 18)}). Clone-stamp healing replaces blemish pixels with surrounding skin samples.`,
+      };
+      if (v <= 75) return {
+        teen: "Pimples are almost gone. Your skin looks like it belongs in a skincare ad. Nobody's skin actually looks like this.",
+        tech: `Aggressive bilateral smoothing (radius ${Math.ceil((3 + (v / 100) * 7) * 1.5)}px). Blemish healer using flood-fill detection + ring sampling + smoothstep feathering. Under-eye regions color-matched to cheek reference.`,
+      };
+      return {
+        teen: "Your skin is plastic now. Every pore, every pimple, every mark — erased. This is what Facetune does to every influencer photo you've ever seen.",
+        tech: `Maximum bilateral filter (10px radius, 60 color sigma). All detectable blemishes healed. Texture variance reduced by ~${Math.round(v * 0.85)}%. The original skin is essentially replaced with averaged color patches.`,
+      };
+    },
+    faceShape: (v) => {
+      if (v <= 25) return {
+        teen: "Subtle face slimming. Your jaw looks a little sharper. You might not even notice — but your brain does.",
+        tech: `Horizontal scale: ${(1 - (v / 100) * 0.06).toFixed(3)}x, vertical: ${(1 + (v / 100) * 0.03).toFixed(3)}x. SVG displacement map (turbulence-based, scale ${((v / 100) * 14).toFixed(1)}) warps facial contours.`,
+      };
+      if (v <= 50) return {
+        teen: "Your face is noticeably thinner now. Eyes look bigger. This is TikTok's 'Enhance' mode — it's on by default for millions of users.",
+        tech: `ScaleX ${(1 - (v / 100) * 0.06).toFixed(3)}, ScaleY ${(1 + (v / 100) * 0.03).toFixed(3)}. feTurbulence displacement at scale ${((v / 100) * 14).toFixed(1)} introduces non-uniform warping that mimics facial restructuring.`,
+      };
+      return {
+        teen: "This face shape is geometrically impossible. No human jaw is this narrow. Snapchat's 3D mesh tracking does this in real time, 30 frames per second.",
+        tech: `Heavy geometric distortion. ScaleX ${(1 - (v / 100) * 0.06).toFixed(3)} compresses width. SVG displacement scale ${((v / 100) * 14).toFixed(1)} — this exceeds natural facial proportion ranges.`,
+      };
+    },
+    lightingTone: (v) => {
+      if (v <= 25) return {
+        teen: "A little brighter, a little warmer. Like standing near a window. Instagram's lightest filters do exactly this.",
+        tech: `Brightness ${(1 + (v / 100) * 0.22).toFixed(2)}x, contrast ${(1 - (v / 100) * 0.1).toFixed(2)}x, saturation ${(1 + (v / 100) * 0.18).toFixed(2)}x, sepia ${((v / 100) * 0.1).toFixed(3)}.`,
+      };
+      if (v <= 50) return {
+        teen: "This is 'golden hour' lighting that doesn't exist. Your skin looks glowing. This warmth is what made Instagram famous — Valencia, Clarendon, Juno all do this.",
+        tech: `Brightness +${Math.round((v / 100) * 22)}%, saturation +${Math.round((v / 100) * 18)}%, warm sepia overlay at ${((v / 100) * 0.1 * 100).toFixed(1)}%. Contrast reduced ${Math.round((v / 100) * 10)}% to flatten shadows.`,
+      };
+      return {
+        teen: "Full studio lighting simulation. Professional photographers charge thousands for this look. The filter does it in 3 milliseconds. Your real lighting will always feel 'worse' after seeing this.",
+        tech: `Brightness +${Math.round((v / 100) * 22)}%, contrast -${Math.round((v / 100) * 10)}%, saturation +${Math.round((v / 100) * 18)}%. Combined with sepia produces a warm, low-shadow look that masks skin irregularities.`,
+      };
+    },
+    makeup: (v) => {
+      if (v <= 25) return {
+        teen: "Light digital makeup — a hint of color on your cheeks and lips. You can't smudge it, it costs nothing, and it never looks bad. Real makeup can't compete.",
+        tech: `Soft-light blend overlay at ${((v / 100) * 0.22 * 100).toFixed(1)}% opacity. Gradient simulates blush (cheek) + lip tint + contour. Saturation boost +${Math.round((v / 100) * 12)}%.`,
+      };
+      if (v <= 50) return {
+        teen: "Full foundation, blush, and contouring — painted on digitally. TikTok's Bold Glamour does this so well that millions of people couldn't tell it was a filter.",
+        tech: `Soft-light overlay at ${((v / 100) * 0.22 * 100).toFixed(1)}% with multi-stop gradient (foundation → blush → contour). Additional saturation +${Math.round((v / 100) * 12)}% and contrast +${Math.round((v / 100) * 4)}%.`,
+      };
+      return {
+        teen: "Heavy glam. Eyeliner, lashes, full contour, lip color — all digital, all perfect. This is what beauty brands sponsor as 'try-on' filters. The product doesn't look this good in real life.",
+        tech: `Maximum soft-light overlay (${((v / 100) * 0.22 * 100).toFixed(1)}% opacity). Combined with saturation +${Math.round((v / 100) * 12)}% and contrast +${Math.round((v / 100) * 4)}% creates a digitally-painted appearance indistinguishable from professional makeup at thumbnail scale.`,
+      };
+    },
+  };
+
+  return messages[key](value);
+}
 
 /* ---------- Guided Step Overlays ---------- */
 
@@ -335,10 +408,12 @@ export default function DistortionLabPage() {
 
   const [photo, setPhoto] = useState<string | null>(null);
   const [retouchedPhoto, setRetouchedPhoto] = useState<string | null>(null);
+  const [retouchStats, setRetouchStats] = useState<RetouchStats | null>(null);
   const [isRetouching, setIsRetouching] = useState(false);
   const [state, setState] = useState<DistortionState>({ ...ZERO });
   const [compareMode, setCompareMode] = useState<CompareMode>("slider");
   const [expandedCategory, setExpandedCategory] = useState<CategoryKey | null>(null);
+  const [showTechDetails, setShowTechDetails] = useState(false);
   const [sliderPos, setSliderPos] = useState(50);
   const sliderContainerRef = useRef<HTMLDivElement>(null);
   const heatmapCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -376,12 +451,14 @@ export default function DistortionLabPage() {
   useEffect(() => {
     if (!photo || !originalCanvasRef.current) {
       setRetouchedPhoto(null);
+      setRetouchStats(null);
       return;
     }
 
     const skinVal = state.skinTexture;
     if (skinVal <= 0) {
       setRetouchedPhoto(null);
+      setRetouchStats(null);
       return;
     }
 
@@ -404,7 +481,7 @@ export default function DistortionLabPage() {
         eyeBagRemoval: skinVal,
       };
 
-      const result = applyRetouch(
+      const { canvas: resultCanvas, stats } = applyRetouch(
         workCanvas,
         opts,
         isUsingDemo.current ? DEMO_BLEMISHES : undefined,
@@ -414,7 +491,8 @@ export default function DistortionLabPage() {
           : undefined // real photos use HSV auto-detection
       );
 
-      setRetouchedPhoto(result.toDataURL("image/jpeg", 0.92));
+      setRetouchStats(stats);
+      setRetouchedPhoto(resultCanvas.toDataURL("image/jpeg", 0.92));
       setIsRetouching(false);
     }, 150);
 
@@ -890,6 +968,7 @@ export default function DistortionLabPage() {
                       const ed = EDUCATION[key];
                       const isExpanded = expandedCategory === key;
                       const value = state[key];
+                      const msg = getSliderMessage(key, value);
                       return (
                         <div key={key}>
                           <div className="mb-2 flex items-center justify-between">
@@ -913,6 +992,15 @@ export default function DistortionLabPage() {
                             onChange={(e) => setSlider(key, Number(e.target.value))}
                             className="w-full accent-[var(--accent)] h-1.5 rounded-full appearance-none bg-[var(--warm-300)] cursor-pointer"
                           />
+                          {/* Live plain-language description */}
+                          {msg && (
+                            <div className="mt-2 rounded-[10px] bg-[var(--warm-100)] border border-[var(--warm-300)] px-3 py-2.5 animate-fade-up">
+                              <p className="text-[12px] leading-relaxed text-[var(--text-secondary)]">{msg.teen}</p>
+                              {showTechDetails && (
+                                <p className="mt-1.5 text-[10px] leading-relaxed text-[var(--text-muted)] font-mono">{msg.tech}</p>
+                              )}
+                            </div>
+                          )}
                           {isExpanded && (
                             <div className="mt-3 rounded-[10px] bg-[var(--bg-secondary)] px-4 py-3 animate-fade-up">
                               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--coral)] mb-1">What changed</p>
@@ -927,6 +1015,14 @@ export default function DistortionLabPage() {
                       );
                     })}
                   </div>
+                  {/* Tech details toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setShowTechDetails((p) => !p)}
+                    className="mt-4 text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition"
+                  >
+                    {showTechDetails ? "Hide technical details" : "How does this work? (show the math)"}
+                  </button>
                 </div>
 
                 {/* Distortion Meter */}
@@ -948,6 +1044,74 @@ export default function DistortionLabPage() {
                     <p className="text-[11px] text-[var(--text-muted)]">No distortions applied. This is real skin.</p>
                   )}
                 </div>
+
+                {/* What the filter did — teen-friendly stats */}
+                {retouchStats && retouchStats.blemishesRemoved + retouchStats.porePixelsSmoothed + retouchStats.underEyeRegionsFixed > 0 && (
+                  <div className="card p-4 animate-fade-up">
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--coral)]">
+                      What the filter just did to your face
+                    </p>
+                    <div className="space-y-2">
+                      {retouchStats.blemishesRemoved > 0 && (
+                        <div className="flex items-start gap-2.5">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--coral)]/10 text-[10px] font-bold text-[var(--coral)]">
+                            {retouchStats.blemishesRemoved}
+                          </span>
+                          <div>
+                            <p className="text-[13px] font-medium text-[var(--text-primary)]">
+                              {retouchStats.blemishesRemoved === 1 ? "pimple erased" : "pimples erased"}
+                            </p>
+                            <p className="text-[11px] text-[var(--text-muted)]">
+                              Found, traced, and painted over with surrounding skin
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {retouchStats.porePixelsSmoothed > 0 && (
+                        <div className="flex items-start gap-2.5">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--amber)]/10 text-[10px] font-bold text-[var(--amber)]">
+                            {retouchStats.porePixelsSmoothed > 999 ? `${(retouchStats.porePixelsSmoothed / 1000).toFixed(1)}k` : retouchStats.porePixelsSmoothed}
+                          </span>
+                          <div>
+                            <p className="text-[13px] font-medium text-[var(--text-primary)]">
+                              skin detail pixels smoothed away
+                            </p>
+                            <p className="text-[11px] text-[var(--text-muted)]">
+                              Pores, texture, and fine lines — {Math.round(retouchStats.textureReduction * 100)}% of your skin&apos;s natural texture is gone
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {retouchStats.underEyeRegionsFixed > 0 && (
+                        <div className="flex items-start gap-2.5">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--gold)]/10 text-[10px] font-bold text-[var(--gold)]">
+                            {retouchStats.underEyeRegionsFixed}
+                          </span>
+                          <div>
+                            <p className="text-[13px] font-medium text-[var(--text-primary)]">
+                              dark circle{retouchStats.underEyeRegionsFixed > 1 ? "s" : ""} lightened
+                            </p>
+                            <p className="text-[11px] text-[var(--text-muted)]">
+                              Under-eye area color-matched to cheek skin (+{Math.round(retouchStats.underEyeBrightnessGain)} brightness)
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {showTechDetails && (
+                      <div className="mt-3 rounded-[8px] bg-[var(--bg-secondary)] px-3 py-2">
+                        <p className="text-[10px] font-mono leading-relaxed text-[var(--text-muted)]">
+                          Skin mask: {retouchStats.skinPixelCount.toLocaleString()}/{retouchStats.totalPixels.toLocaleString()} pixels ({Math.round((retouchStats.skinPixelCount / retouchStats.totalPixels) * 100)}%)
+                          {retouchStats.smoothingRadius > 0 && <> · Bilateral radius: {retouchStats.smoothingRadius}px</>}
+                          {retouchStats.textureReduction > 0 && <> · Variance reduced: {Math.round(retouchStats.textureReduction * 100)}%</>}
+                        </p>
+                      </div>
+                    )}
+                    <p className="mt-3 text-[11px] italic text-[var(--text-muted)]">
+                      This all happened in less than a second. Snapchat does it 30 times per second — before you see your own face.
+                    </p>
+                  </div>
+                )}
 
                 {/* Privacy */}
                 <div className="rounded-[10px] border border-[var(--accent-light)] bg-[var(--accent-lighter)] px-4 py-3">

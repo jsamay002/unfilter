@@ -195,14 +195,14 @@ export function DistortionDemo() {
       work.height = src.height;
       work.getContext("2d")!.drawImage(src, 0, 0);
 
-      const result = applyRetouch(
+      const { canvas: resultCanvas } = applyRetouch(
         work,
         { smoothing, blemishRemoval: Math.min(100, smoothing * 1.5), eyeBagRemoval: smoothing },
         isUsingDemo.current ? DEMO_BLEMISHES : undefined,
         isUsingDemo.current ? DEMO_UNDER_EYES : undefined,
       );
 
-      setRetouchedUrl(result.toDataURL("image/jpeg", 0.92));
+      setRetouchedUrl(resultCanvas.toDataURL("image/jpeg", 0.92));
       setIsProcessing(false);
     }, 150);
 

@@ -25,6 +25,26 @@ export type BlemishRegion = {
   pixels: Array<{ x: number; y: number }>;
 };
 
+/** Stats returned by the retouch pipeline — what was actually done to the image */
+export type RetouchStats = {
+  /** Total skin pixels identified in the image */
+  skinPixelCount: number;
+  /** Total pixels in the image */
+  totalPixels: number;
+  /** Number of blemishes detected and removed */
+  blemishesRemoved: number;
+  /** Number of under-eye regions lightened */
+  underEyeRegionsFixed: number;
+  /** Bilateral filter radius used (px) */
+  smoothingRadius: number;
+  /** How much skin texture variance was reduced (0-1) */
+  textureReduction: number;
+  /** Average brightness increase in under-eye regions */
+  underEyeBrightnessGain: number;
+  /** Total individual skin detail pixels altered by smoothing */
+  porePixelsSmoothed: number;
+};
+
 // ---------- Skin Mask (HSV-based) ----------
 
 /** Build a boolean skin mask from image data using HSV color ranges */
@@ -112,7 +132,6 @@ export function bilateralFilter(
   }
 
   const colorSigmaSq2 = 2 * colorSigma * colorSigma;
-  const kernelSize = 2 * radius + 1;
 
   for (let y = radius; y < height - radius; y++) {
     for (let x = radius; x < width - radius; x++) {
@@ -422,7 +441,7 @@ export function lightenUnderEyes(
 
 /**
  * Apply the full retouching pipeline to a canvas.
- * Returns a new canvas with the retouched image.
+ * Returns a new canvas with the retouched image + stats about what changed.
  */
 export function applyRetouch(
   sourceCanvas: HTMLCanvasElement,
@@ -430,13 +449,16 @@ export function applyRetouch(
   knownBlemishes?: BlemishRegion[],
   knownUnderEyes?: Array<{ cx: number; cy: number; rx: number; ry: number }>,
   customSkinMask?: boolean[]
-): HTMLCanvasElement {
+): { canvas: HTMLCanvasElement; stats: RetouchStats } {
   const { width, height } = sourceCanvas;
   const ctx = sourceCanvas.getContext("2d", { willReadFrequently: true })!;
+  const originalData = ctx.getImageData(0, 0, width, height);
   let imageData = ctx.getImageData(0, 0, width, height);
 
   // Step 1: Build skin mask
   const mask = buildSkinMask(imageData, customSkinMask);
+  const skinPixelCount = mask.filter(Boolean).length;
+  const totalPixels = width * height;
 
   // Step 2: Detect blemishes (or use known positions)
   const blemishes =
@@ -448,13 +470,39 @@ export function applyRetouch(
   }
 
   // Step 4: Bilateral filter on skin regions
+  const smoothingRadius = options.smoothing > 0
+    ? Math.ceil((3 + (options.smoothing / 100) * 7) * 1.5)
+    : 0;
   if (options.smoothing > 0) {
     imageData = bilateralFilter(imageData, mask, options.smoothing);
   }
 
   // Step 5: Under-eye lightening
+  let underEyeBrightnessGain = 0;
   if (options.eyeBagRemoval > 0 && knownUnderEyes) {
+    // Measure brightness before
+    const beforeLum = measureRegionBrightness(imageData, knownUnderEyes);
     imageData = lightenUnderEyes(imageData, knownUnderEyes, options.eyeBagRemoval);
+    const afterLum = measureRegionBrightness(imageData, knownUnderEyes);
+    underEyeBrightnessGain = afterLum - beforeLum;
+  }
+
+  // Compute texture reduction: compare variance in skin region before vs after
+  let textureReduction = 0;
+  let porePixelsSmoothed = 0;
+  if (options.smoothing > 0) {
+    const origVar = computeSkinVariance(originalData, mask);
+    const newVar = computeSkinVariance(imageData, mask);
+    textureReduction = origVar > 0 ? Math.max(0, (origVar - newVar) / origVar) : 0;
+    // Count pixels that changed significantly
+    for (let i = 0; i < totalPixels; i++) {
+      if (!mask[i]) continue;
+      const p = i * 4;
+      const diff = Math.abs(originalData.data[p] - imageData.data[p])
+        + Math.abs(originalData.data[p + 1] - imageData.data[p + 1])
+        + Math.abs(originalData.data[p + 2] - imageData.data[p + 2]);
+      if (diff > 12) porePixelsSmoothed++;
+    }
   }
 
   // Write to output canvas
@@ -464,5 +512,56 @@ export function applyRetouch(
   const outCtx = outCanvas.getContext("2d")!;
   outCtx.putImageData(imageData, 0, 0);
 
-  return outCanvas;
+  return {
+    canvas: outCanvas,
+    stats: {
+      skinPixelCount,
+      totalPixels,
+      blemishesRemoved: options.blemishRemoval > 0 ? blemishes.length : 0,
+      underEyeRegionsFixed: (options.eyeBagRemoval > 0 && knownUnderEyes) ? knownUnderEyes.length : 0,
+      smoothingRadius,
+      textureReduction,
+      underEyeBrightnessGain,
+      porePixelsSmoothed,
+    },
+  };
+}
+
+/** Measure average brightness across under-eye regions */
+function measureRegionBrightness(
+  imageData: ImageData,
+  regions: Array<{ cx: number; cy: number; rx: number; ry: number }>
+): number {
+  const { data, width, height } = imageData;
+  let sum = 0, count = 0;
+  for (const r of regions) {
+    for (let dy = -r.ry; dy <= r.ry; dy++) {
+      for (let dx = -r.rx; dx <= r.rx; dx++) {
+        if ((dx / r.rx) ** 2 + (dy / r.ry) ** 2 > 1) continue;
+        const px = r.cx + dx, py = r.cy + dy;
+        if (px < 0 || px >= width || py < 0 || py >= height) continue;
+        const p = (py * width + px) * 4;
+        sum += data[p] * 0.299 + data[p + 1] * 0.587 + data[p + 2] * 0.114;
+        count++;
+      }
+    }
+  }
+  return count > 0 ? sum / count : 0;
+}
+
+/** Compute color variance across skin-masked pixels */
+function computeSkinVariance(imageData: ImageData, mask: boolean[]): number {
+  const { data } = imageData;
+  let sum = 0, sumSq = 0, count = 0;
+  for (let i = 0; i < mask.length; i++) {
+    if (!mask[i]) continue;
+    const p = i * 4;
+    const lum = data[p] * 0.299 + data[p + 1] * 0.587 + data[p + 2] * 0.114;
+    sum += lum;
+    sumSq += lum * lum;
+    count++;
+  }
+  if (count < 2) return 0;
+  const mean = sum / count;
+  return sumSq / count - mean * mean;
 }
