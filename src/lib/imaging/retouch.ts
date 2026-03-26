@@ -243,7 +243,15 @@ export function detectBlemishes(
         return c2 > 0 ? sr / c2 : 0;
       })();
 
-      if (darkDiff > threshold || (redness - localRedness) > threshold * 0.6) {
+      // Require BOTH darkness AND redness excess to reduce false positives
+      // from redness patches and texture noise
+      const isDark = darkDiff > threshold;
+      const isRedder = (redness - localRedness) > threshold * 0.5;
+
+      if (isDark && isRedder) {
+        flagged[idx] = 1;
+      } else if (darkDiff > threshold * 1.8) {
+        // Very dark spots still count even without redness (e.g., blackheads)
         flagged[idx] = 1;
       }
     }
@@ -281,7 +289,8 @@ export function detectBlemishes(
       }
 
       // Only keep clusters that are pimple-sized (3-80 pixels, roughly 2-10px radius)
-      if (pixels.length >= 3 && pixels.length <= 80) {
+      // Min 8 pixels filters noise; max 120 allows larger blemishes
+      if (pixels.length >= 8 && pixels.length <= 120) {
         const cx = Math.round(sumX / pixels.length);
         const cy = Math.round(sumY / pixels.length);
         const radius = Math.ceil(Math.sqrt(pixels.length / Math.PI)) + 1;

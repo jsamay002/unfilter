@@ -39,13 +39,15 @@ export interface SkinCategory {
   severity: "low" | "medium" | "high";
 }
 
-/** Metrics extracted from the image (mock until real model) */
+/** Metrics extracted from the image via CV pixel analysis */
 export interface SkinMetrics {
   redness: number; // 0-1
   texture: number; // 0-1
   spotCount: number;
   uniformity: number; // 0-1
   reliability: number; // 0-1 — how trustworthy is this reading
+  skinPixelRatio?: number; // fraction of image that was detected as skin
+  analysisMethod?: "cv-pixel" | "onnx" | "mock"; // what ran the analysis
 }
 
 /** Full result from a check-in */

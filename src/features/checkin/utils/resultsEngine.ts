@@ -11,6 +11,7 @@ import type {
   ActionPlan,
   CheckInResult,
 } from "../types";
+import { crossReference, type CrossReferenceResult } from "./crossReference";
 
 /**
  * Check for red flags that require escalation.
@@ -194,7 +195,8 @@ export function assembleCheckIn(
   metrics: SkinMetrics,
   symptoms: SymptomContext,
   qualityReport: import("../types").QualityReport
-): Omit<CheckInResult, "id" | "timestamp"> {
+): Omit<CheckInResult, "id" | "timestamp"> & { crossRef: CrossReferenceResult } {
+  const crossRef = crossReference(metrics, symptoms);
   const redFlags = detectRedFlags(symptoms, metrics);
   const categories = generateCategories(symptoms, metrics);
   const actionPlan = generateActionPlan(categories, symptoms);
@@ -206,5 +208,8 @@ export function assembleCheckIn(
     categories,
     redFlags,
     actionPlan,
+    crossRef,
   };
 }
+
+export type { CrossReferenceResult };

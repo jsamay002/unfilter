@@ -17,7 +17,9 @@ import {
   detectRedFlags,
   generateCategories,
   generateActionPlan,
+  type CrossReferenceResult,
 } from "@/features/checkin/utils/resultsEngine";
+import { crossReference } from "@/features/checkin/utils/crossReference";
 import { QualityGateCard } from "@/features/checkin/components/quality-gate/QualityGateCard";
 import { SymptomForm } from "@/features/checkin/components/questions/SymptomForm";
 import { ResultsCard } from "@/features/checkin/components/results/ResultsCard";
@@ -42,6 +44,7 @@ export default function CheckInWizard() {
   const [categories, setCategories] = useState<SkinCategory[]>([]);
   const [actionPlan, setActionPlan] = useState<ActionPlan | null>(null);
   const [redFlags, setRedFlags] = useState<RedFlagResult | null>(null);
+  const [crossRef, setCrossRef] = useState<CrossReferenceResult | null>(null);
 
   // ---- Step 1: Capture ----
   const handleFileChange = useCallback(
@@ -86,6 +89,9 @@ export default function CheckInWizard() {
 
       const m = await runSkinAnalysis(imgRef.current);
       setMetrics(m);
+
+      const cr = crossReference(m, s);
+      setCrossRef(cr);
 
       const rf = detectRedFlags(s, m);
       setRedFlags(rf);
@@ -137,6 +143,7 @@ export default function CheckInWizard() {
     setCategories([]);
     setActionPlan(null);
     setRedFlags(null);
+    setCrossRef(null);
     setStep("capture");
   }, [previewUrl]);
 
@@ -245,6 +252,7 @@ export default function CheckInWizard() {
               actionPlan={actionPlan}
               redFlags={redFlags}
               metrics={metrics}
+              crossRef={crossRef}
               onSave={handleSave}
               onDiscard={handleDiscard}
               onNewCheckIn={handleDiscard}

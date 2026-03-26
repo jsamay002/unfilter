@@ -7,12 +7,14 @@ import type {
   RedFlagResult,
   SkinMetrics,
 } from "../../types";
+import type { CrossReferenceResult } from "../../utils/crossReference";
 
 interface ResultsCardProps {
   categories: SkinCategory[];
   actionPlan: ActionPlan;
   redFlags: RedFlagResult;
   metrics: SkinMetrics;
+  crossRef: CrossReferenceResult | null;
   onSave: () => void;
   onDiscard: () => void;
   onNewCheckIn: () => void;
@@ -23,40 +25,53 @@ export function ResultsCard({
   actionPlan,
   redFlags,
   metrics,
+  crossRef,
   onSave,
   onDiscard,
   onNewCheckIn,
 }: ResultsCardProps) {
   const [showDetails, setShowDetails] = useState(false);
+  const [showMetrics, setShowMetrics] = useState(false);
 
   return (
     <div className="space-y-4">
       {/* Disclaimer banner */}
-      <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-xs text-blue-700">
-        <strong>Remember:</strong> This is educational guidance only — not a
-        medical diagnosis. When in doubt, talk to a trusted adult or healthcare
-        provider.
+      <div className="rounded-[14px] bg-[var(--accent-lighter)] border border-[var(--accent-light)] px-4 py-3">
+        <p className="text-[12px] font-semibold text-[var(--accent-dark)] mb-1">
+          This is not a diagnosis.
+        </p>
+        <p className="text-[11px] text-[var(--accent-dark)]/80 leading-relaxed">
+          Unfilter uses pattern recognition on your photo — not medical training.
+          A doctor uses years of education, physical examination, your history,
+          and tools this app doesn&apos;t have. When in doubt, talk to a trusted
+          adult or healthcare provider.
+        </p>
       </div>
 
       {/* Red flag alert (if triggered) */}
       {redFlags.triggered && (
-        <div className="rounded-2xl border-2 border-red-200 bg-red-50 p-5">
-          <h3 className="text-base font-semibold text-red-800 mb-2">
-            ⚠️ We noticed something worth attention
+        <div className="rounded-[16px] border-2 border-[var(--coral)]/30 bg-[var(--coral)]/5 p-5">
+          <h3 className="text-[16px] font-semibold text-[var(--coral)] mb-2">
+            We noticed something worth attention
           </h3>
           <ul className="mb-3 space-y-1.5">
             {redFlags.flags.map((f, i) => (
-              <li key={i} className="text-sm text-red-700 flex gap-2">
-                <span className="shrink-0">•</span>
+              <li key={i} className="text-[13px] text-[var(--coral)] flex gap-2">
+                <span className="shrink-0 mt-0.5">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M7 4v3.5M7 9.5h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </span>
                 <span>{f}</span>
               </li>
             ))}
           </ul>
-          <div className="rounded-lg bg-white/70 px-4 py-3 text-sm text-red-800 font-medium">
+          <div className="rounded-[12px] bg-white/70 px-4 py-3 text-[13px] text-[var(--coral)] font-medium">
             {redFlags.message}
           </div>
           {redFlags.escalationLevel === "urgentCare" && (
-            <p className="mt-2 text-xs text-red-600">
+            <p className="mt-2 text-[11px] text-[var(--coral)]/80">
               If you feel very unwell or the area is rapidly worsening, ask an
               adult to help you get medical attention today.
             </p>
@@ -64,12 +79,162 @@ export function ResultsCard({
         </div>
       )}
 
-      {/* Educational categories */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-800 mb-1">
-          🔍 What this might be
+      {/* Cross-reference: camera vs self-report */}
+      {crossRef && !crossRef.aligned && crossRef.discrepancies.length > 0 && (
+        <div className="rounded-[16px] border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-5">
+          <h3 className="text-[15px] font-semibold text-[var(--text-primary)] mb-1">
+            Your photo told us something extra
+          </h3>
+          <p className="text-[12px] text-[var(--text-secondary)] mb-4 leading-relaxed">
+            {crossRef.summary}
+          </p>
+
+          <div className="space-y-3">
+            {crossRef.discrepancies.map((d, i) => (
+              <div
+                key={i}
+                className={`rounded-[12px] px-4 py-3 ${
+                  d.severity === "important"
+                    ? "bg-[var(--coral)]/8 border border-[var(--coral)]/20"
+                    : d.severity === "noteworthy"
+                    ? "bg-[var(--gold)]/10 border border-[var(--gold)]/20"
+                    : "bg-[var(--bg-secondary)] border border-[var(--border-light)]"
+                }`}
+              >
+                <div className="flex gap-3 mb-2">
+                  <div className="flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--accent)] mb-0.5">
+                      Camera saw
+                    </p>
+                    <p className="text-[12px] font-medium text-[var(--text-primary)]">
+                      {d.cameraReading}
+                    </p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)] mb-0.5">
+                      You said
+                    </p>
+                    <p className="text-[12px] font-medium text-[var(--text-primary)]">
+                      {d.userReported}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
+                  {d.message}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-3 text-[10px] italic text-[var(--text-muted)]">
+            Cameras see color and shape — they can&apos;t feel pain, itchiness, or
+            how long something has been there. Your answers always matter more
+            than what a camera detects.
+          </p>
+        </div>
+      )}
+
+      {/* What the camera measured */}
+      <div className="rounded-[16px] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-sm">
+        <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-1">
+          What the camera measured
         </h3>
-        <p className="text-xs text-slate-400 mb-4">
+        <p className="text-[11px] text-[var(--text-muted)] mb-4">
+          Real measurements from your photo — not a diagnosis
+        </p>
+
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <MetricPill
+            label="Redness"
+            value={metrics.redness}
+            desc={
+              metrics.redness > 0.5
+                ? "Above average"
+                : metrics.redness > 0.25
+                ? "Some redness"
+                : "Low"
+            }
+          />
+          <MetricPill
+            label="Texture"
+            value={metrics.texture}
+            desc={
+              metrics.texture > 0.5
+                ? "Uneven"
+                : metrics.texture > 0.25
+                ? "Some variation"
+                : "Smooth"
+            }
+          />
+          <MetricPill
+            label="Spots"
+            value={Math.min(1, metrics.spotCount / 20)}
+            desc={`${metrics.spotCount} detected`}
+          />
+          <MetricPill
+            label="Evenness"
+            value={metrics.uniformity}
+            desc={
+              metrics.uniformity > 0.7
+                ? "Even tone"
+                : metrics.uniformity > 0.4
+                ? "Some variation"
+                : "Uneven"
+            }
+          />
+        </div>
+
+        {metrics.skinPixelRatio !== undefined && (
+          <button
+            onClick={() => setShowMetrics(!showMetrics)}
+            className="text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition"
+          >
+            {showMetrics ? "Hide details" : "How did we measure this?"}
+          </button>
+        )}
+
+        {showMetrics && (
+          <div className="mt-3 rounded-[10px] bg-[var(--bg-secondary)] px-3 py-2.5 animate-fade-up">
+            <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed mb-2">
+              We analyzed your photo using computer vision — the same kind of math that
+              Snapchat uses to find your face. Here&apos;s what we did:
+            </p>
+            <ul className="space-y-1">
+              <li className="text-[10px] text-[var(--text-muted)]">
+                <strong>Skin detection:</strong> Found skin pixels using color analysis (HSV color space).{" "}
+                {metrics.skinPixelRatio !== undefined &&
+                  `${Math.round(metrics.skinPixelRatio * 100)}% of your photo was identified as skin.`}
+              </li>
+              <li className="text-[10px] text-[var(--text-muted)]">
+                <strong>Redness:</strong> Measured how red-shifted your skin pixels are compared to green and blue channels.
+              </li>
+              <li className="text-[10px] text-[var(--text-muted)]">
+                <strong>Spots:</strong> Found dark or red clusters on your skin using flood-fill detection — the same algorithm that erases pimples in the Distortion Lab.
+              </li>
+              <li className="text-[10px] text-[var(--text-muted)]">
+                <strong>Texture:</strong> Measured how much your skin color varies from pixel to pixel (high variation = rougher texture).
+              </li>
+              <li className="text-[10px] text-[var(--text-muted)]">
+                <strong>Evenness:</strong> How consistent your skin tone is across the whole area.
+              </li>
+            </ul>
+            <p className="mt-2 text-[10px] italic text-[var(--text-muted)]">
+              Reliability: {Math.round(metrics.reliability * 100)}% — {
+                metrics.reliability > 0.6
+                  ? "good photo quality for analysis"
+                  : "moderate — better lighting or closer crop would improve accuracy"
+              }
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Educational categories */}
+      <div className="rounded-[16px] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-sm">
+        <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-1">
+          What this might be
+        </h3>
+        <p className="text-[11px] text-[var(--text-muted)] mb-4">
           Based on your photo + answers — educational categories, not diagnoses
         </p>
 
@@ -77,53 +242,54 @@ export function ResultsCard({
           {categories.map((cat, i) => (
             <div
               key={i}
-              className="rounded-xl border border-slate-100 bg-slate-50 p-4"
+              className="rounded-[14px] border border-[var(--border-light)] bg-[var(--bg-secondary)] p-4"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-semibold text-slate-800">
+                <span className="text-[13px] font-semibold text-[var(--text-primary)]">
                   {cat.name}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <SeverityBadge severity={cat.severity} />
-                  <span className="text-xs text-slate-400">
+                  <span className="text-[11px] text-[var(--text-muted)]">
                     {Math.round(cat.confidence * 100)}% match
                   </span>
                 </span>
               </div>
               {/* Confidence bar */}
-              <div className="mb-2 h-1.5 w-full rounded-full bg-slate-200">
+              <div className="mb-2 h-1.5 w-full rounded-full bg-[var(--warm-300)]">
                 <div
-                  className="h-1.5 rounded-full bg-slate-600 transition-all"
+                  className="h-1.5 rounded-full bg-[var(--accent)] transition-all"
                   style={{ width: `${cat.confidence * 100}%` }}
                 />
               </div>
-              <p className="text-sm text-slate-600">{cat.description}</p>
+              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
+                {cat.description}
+              </p>
             </div>
           ))}
         </div>
 
         {/* Reliability note */}
-        {metrics.reliability < 0.6 && (
-          <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
-            🔎 Reliability is moderate — consider retaking with better lighting
-            or checking in again in a few days for a clearer picture.
+        {metrics.reliability < 0.5 && (
+          <div className="mt-3 rounded-[10px] bg-[var(--gold)]/10 px-3 py-2 text-[11px] text-[var(--gold)]">
+            Reliability is low — retake with better lighting or closer crop for more accurate results.
           </div>
         )}
       </div>
 
       {/* Action Plan */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">
-          ✅ Your Action Plan
+      <div className="rounded-[16px] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-sm">
+        <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-4">
+          Your Action Plan
         </h3>
 
-        <Section title="Do today" emoji="💧" items={actionPlan.doItems} color="emerald" />
-        <Section title="Avoid for now" emoji="🚫" items={actionPlan.avoidItems} color="red" />
-        <Section title="Track this week" emoji="📊" items={actionPlan.trackItems} color="blue" />
+        <Section title="Do today" items={actionPlan.doItems} color="accent" />
+        <Section title="Avoid for now" items={actionPlan.avoidItems} color="coral" />
+        <Section title="Track this week" items={actionPlan.trackItems} color="gold" />
 
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="mt-3 text-sm text-slate-500 underline decoration-dotted hover:text-slate-700"
+          className="mt-3 text-[12px] text-[var(--text-muted)] underline decoration-dotted hover:text-[var(--text-secondary)] transition"
         >
           {showDetails ? "Hide" : "Show"} product & ingredient tips
         </button>
@@ -131,42 +297,50 @@ export function ResultsCard({
         {showDetails && (
           <Section
             title="Product tips"
-            emoji="🧴"
             items={actionPlan.productTips}
-            color="violet"
+            color="accent"
           />
         )}
       </div>
 
       {/* Save / discard */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h3 className="text-sm font-semibold text-slate-800 mb-2">
+      <div className="rounded-[16px] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-sm">
+        <h3 className="text-[13px] font-semibold text-[var(--text-primary)] mb-1">
           Save this check-in?
         </h3>
-        <p className="text-xs text-slate-500 mb-3">
+        <p className="text-[11px] text-[var(--text-muted)] mb-3">
           Saving stores an encrypted copy on your device so you can track
-          changes. Photos are auto-deleted by default — only metrics are kept.
+          changes over time. Photos are auto-deleted by default — only metrics are kept.
         </p>
         <div className="flex gap-2">
           <button
             onClick={onSave}
-            className="flex-1 rounded-xl bg-slate-800 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+            className="flex-1 rounded-[12px] bg-[var(--accent)] py-2.5 text-[13px] font-semibold text-white transition hover:bg-[var(--accent-dark)]"
           >
-            💾 Save to Journal
+            Save to Journal
           </button>
           <button
             onClick={onDiscard}
-            className="flex-1 rounded-xl border border-slate-300 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+            className="flex-1 rounded-[12px] border border-[var(--border)] py-2.5 text-[13px] font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg-secondary)]"
           >
-            🗑️ Delete Now
+            Delete Now
           </button>
         </div>
         <button
           onClick={onNewCheckIn}
-          className="mt-2 w-full text-center text-sm text-slate-400 hover:text-slate-600"
+          className="mt-2 w-full text-center text-[12px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition"
         >
           Start a new check-in
         </button>
+      </div>
+
+      {/* Final disclaimer */}
+      <div className="rounded-[10px] bg-[var(--bg-secondary)] px-4 py-3">
+        <p className="text-[10px] text-[var(--text-muted)] leading-relaxed text-center">
+          Unfilter is an educational tool, not a medical device. It cannot diagnose, treat,
+          or prevent any skin condition. If you are concerned about your skin, please see a
+          healthcare professional. In an emergency, call 911.
+        </p>
       </div>
     </div>
   );
@@ -174,11 +348,46 @@ export function ResultsCard({
 
 /* ---- Helpers ---- */
 
+function MetricPill({
+  label,
+  value,
+  desc,
+}: {
+  label: string;
+  value: number;
+  desc: string;
+}) {
+  const pct = Math.round(value * 100);
+  return (
+    <div className="rounded-[12px] bg-[var(--bg-secondary)] px-3 py-2.5">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[11px] font-semibold text-[var(--text-secondary)]">{label}</span>
+        <span className="text-[11px] font-bold tabular-nums text-[var(--text-primary)]">{pct}%</span>
+      </div>
+      <div className="h-1 w-full rounded-full bg-[var(--warm-300)] mb-1">
+        <div
+          className="h-1 rounded-full transition-all"
+          style={{
+            width: `${pct}%`,
+            background:
+              value > 0.6
+                ? "var(--coral)"
+                : value > 0.3
+                ? "var(--gold)"
+                : "var(--accent)",
+          }}
+        />
+      </div>
+      <p className="text-[10px] text-[var(--text-muted)]">{desc}</p>
+    </div>
+  );
+}
+
 function SeverityBadge({ severity }: { severity: "low" | "medium" | "high" }) {
   const styles = {
-    low: "bg-emerald-100 text-emerald-700",
-    medium: "bg-amber-100 text-amber-700",
-    high: "bg-red-100 text-red-700",
+    low: "bg-[var(--accent-light)] text-[var(--accent-dark)]",
+    medium: "bg-[var(--gold)]/15 text-[var(--gold)]",
+    high: "bg-[var(--coral)]/15 text-[var(--coral)]",
   };
   return (
     <span
@@ -191,31 +400,28 @@ function SeverityBadge({ severity }: { severity: "low" | "medium" | "high" }) {
 
 function Section({
   title,
-  emoji,
   items,
   color,
 }: {
   title: string;
-  emoji: string;
   items: string[];
   color: string;
 }) {
   const dotColor: Record<string, string> = {
-    emerald: "bg-emerald-400",
-    red: "bg-red-400",
-    blue: "bg-blue-400",
-    violet: "bg-violet-400",
+    accent: "bg-[var(--accent)]",
+    coral: "bg-[var(--coral)]",
+    gold: "bg-[var(--gold)]",
   };
   return (
     <div className="mb-4">
-      <h4 className="mb-2 text-sm font-medium text-slate-700">
-        {emoji} {title}
+      <h4 className="mb-2 text-[13px] font-semibold text-[var(--text-primary)]">
+        {title}
       </h4>
       <ul className="space-y-1.5">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+          <li key={i} className="flex items-start gap-2 text-[12px] text-[var(--text-secondary)]">
             <span
-              className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[color] ?? "bg-slate-400"}`}
+              className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${dotColor[color] ?? "bg-[var(--text-muted)]"}`}
             />
             {item}
           </li>
