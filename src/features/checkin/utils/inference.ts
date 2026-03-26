@@ -28,7 +28,10 @@ export async function runSkinAnalysis(
 ): Promise<SkinMetrics> {
   // Draw image to canvas at analysis resolution
   const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) {
+    throw new Error("Could not create canvas context for analysis. Please try a different browser.");
+  }
   const maxDim = 400; // balance between accuracy and speed
   const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
   canvas.width = Math.round(img.width * scale);

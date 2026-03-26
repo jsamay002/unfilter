@@ -320,6 +320,9 @@ export function healBlemishes(
   const output = new Uint8ClampedArray(data);
 
   for (const b of blemishes) {
+    // Pre-compute blemish pixel set for O(1) lookup (was O(n) per check)
+    const blemishPixelSet = new Set(b.pixels.map((p) => `${p.x},${p.y}`));
+
     // Sample clean skin from ring around blemish
     const sampleRadius = b.radius + 4;
     let sumR = 0, sumG = 0, sumB = 0, count = 0;
@@ -337,9 +340,8 @@ export function healBlemishes(
         const si = sy * width + sx;
         if (!mask[si]) continue;
 
-        // Skip if this pixel is also a blemish pixel
-        const isBlemishPixel = b.pixels.some((p) => p.x === sx && p.y === sy);
-        if (isBlemishPixel) continue;
+        // Skip blemish pixels — O(1) Set lookup instead of O(n) .some()
+        if (blemishPixelSet.has(`${sx},${sy}`)) continue;
 
         const sp = si * 4;
         sumR += data[sp];

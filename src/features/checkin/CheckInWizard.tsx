@@ -35,7 +35,9 @@ export default function CheckInWizard() {
   const [step, setStep] = useState<CheckInStep>("capture");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const readerRef = useRef<FileReader | null>(null);
 
   // Pipeline data
   const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
@@ -52,12 +54,22 @@ export default function CheckInWizard() {
       const file = e.target.files?.[0];
       if (!file) return;
 
+      setErrorMsg(null);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
 
-      // Also read as data URL for journal persistence
+      // Abort any previous FileReader to prevent stale callbacks
+      if (readerRef.current && readerRef.current.readyState === 1) {
+        readerRef.current.abort();
+      }
+
       const reader = new FileReader();
+      readerRef.current = reader;
       reader.onload = () => setPhotoDataUrl(reader.result as string);
+      reader.onerror = () => {
+        setErrorMsg("Couldn't read the photo. Please try a different image.");
+        setStep("capture");
+      };
       reader.readAsDataURL(file);
 
       // Load image, then run quality gate
@@ -68,15 +80,24 @@ export default function CheckInWizard() {
         setQualityReport(report);
         setStep("quality");
       };
+      img.onerror = () => {
+        setErrorMsg("This image couldn't be loaded. Try a JPEG or PNG photo.");
+        setPreviewUrl(null);
+        setStep("capture");
+      };
       img.src = url;
     },
     []
   );
 
   const handleRetake = useCallback(() => {
+    if (readerRef.current && readerRef.current.readyState === 1) {
+      readerRef.current.abort();
+    }
     setPreviewUrl(null);
     setPhotoDataUrl(null);
     setQualityReport(null);
+    setErrorMsg(null);
     setStep("capture");
   }, []);
 
@@ -85,24 +106,32 @@ export default function CheckInWizard() {
     async (s: SymptomContext) => {
       if (!imgRef.current) return;
       setSymptoms(s);
+      setErrorMsg(null);
       setStep("analyzing");
 
-      const m = await runSkinAnalysis(imgRef.current);
-      setMetrics(m);
+      try {
+        const m = await runSkinAnalysis(imgRef.current);
+        setMetrics(m);
 
-      const cr = crossReference(m, s);
-      setCrossRef(cr);
+        const cr = crossReference(m, s);
+        setCrossRef(cr);
 
-      const rf = detectRedFlags(s, m);
-      setRedFlags(rf);
+        const rf = detectRedFlags(s, m);
+        setRedFlags(rf);
 
-      const cats = generateCategories(s, m);
-      setCategories(cats);
+        const cats = generateCategories(s, m);
+        setCategories(cats);
 
-      const plan = generateActionPlan(cats, s);
-      setActionPlan(plan);
+        const plan = generateActionPlan(cats, s);
+        setActionPlan(plan);
 
-      setStep("results");
+        setStep("results");
+      } catch {
+        setErrorMsg(
+          "Something went wrong during analysis. Try retaking the photo with better lighting."
+        );
+        setStep("capture");
+      }
     },
     []
   );
@@ -144,6 +173,7 @@ export default function CheckInWizard() {
     setActionPlan(null);
     setRedFlags(null);
     setCrossRef(null);
+    setErrorMsg(null);
     setStep("capture");
   }, [previewUrl]);
 
@@ -151,6 +181,13 @@ export default function CheckInWizard() {
     <div className="mx-auto max-w-lg">
       {/* Step indicator */}
       <StepBar current={step} />
+
+      {/* ---- ERROR BANNER ---- */}
+      {errorMsg && step === "capture" && (
+        <div className="mt-4 rounded-[12px] border border-[var(--coral)]/20 bg-[var(--coral)]/5 px-4 py-3 animate-fade-up">
+          <p className="text-[13px] text-[var(--coral)] font-medium">{errorMsg}</p>
+        </div>
+      )}
 
       {/* ---- CAPTURE ---- */}
       {step === "capture" && (
