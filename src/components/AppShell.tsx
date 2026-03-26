@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!mounted) {
     return (
       <div className="flex flex-col min-h-screen">
-        <div className="h-[52px] border-b border-[var(--border-light)] bg-[var(--bg-elevated)]" />
+        <div className="h-[48px] border-b border-[var(--border-light)] bg-[var(--bg-elevated)]" />
         <div className="flex flex-1">
           <div className="w-[220px] border-r border-[var(--border-light)] bg-[var(--bg-primary)]" />
           <main className="flex-1 px-6 py-8 md:px-10 md:py-10">{children}</main>

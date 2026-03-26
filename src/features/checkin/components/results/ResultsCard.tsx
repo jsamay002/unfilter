@@ -79,11 +79,12 @@ export function ResultsCard({
         </div>
       )}
 
-      {/* Cross-reference: camera vs self-report */}
+      {/* Cross-reference: camera vs self-report — truth vs perception */}
       {crossRef && !crossRef.aligned && crossRef.discrepancies.length > 0 && (
         <div className="rounded-[16px] border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-5">
+          <p className="label-evidence text-[var(--gold)] mb-2">Discrepancy detected</p>
           <h3 className="text-[15px] font-semibold text-[var(--text-primary)] mb-1">
-            Your photo told us something extra
+            Your photo revealed something you didn&apos;t mention
           </h3>
           <p className="text-[12px] text-[var(--text-secondary)] mb-4 leading-relaxed">
             {crossRef.summary}
@@ -103,16 +104,16 @@ export function ResultsCard({
               >
                 <div className="flex gap-3 mb-2">
                   <div className="flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--accent)] mb-0.5">
-                      Camera saw
+                    <p className="label-evidence text-[var(--accent)] mb-0.5">
+                      Camera truth
                     </p>
                     <p className="text-[12px] font-medium text-[var(--text-primary)]">
                       {d.cameraReading}
                     </p>
                   </div>
                   <div className="flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)] mb-0.5">
-                      You said
+                    <p className="label-evidence text-[var(--text-muted)] mb-0.5">
+                      Your report
                     </p>
                     <p className="text-[12px] font-medium text-[var(--text-primary)]">
                       {d.userReported}
@@ -134,13 +135,14 @@ export function ResultsCard({
         </div>
       )}
 
-      {/* What the camera measured */}
-      <div className="rounded-[16px] border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-sm">
+      {/* What the camera measured — truth surface */}
+      <div className="rounded-[16px] surface-truth p-5">
+        <p className="label-evidence text-[var(--accent)] mb-2">Image analysis</p>
         <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-1">
           What the camera measured
         </h3>
         <p className="text-[11px] text-[var(--text-muted)] mb-4">
-          Real measurements from your photo — not a diagnosis
+          Real pixel measurements from your photo — not a diagnosis
         </p>
 
         <div className="grid grid-cols-2 gap-3 mb-3">

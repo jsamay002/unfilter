@@ -156,12 +156,13 @@ export default function CheckInWizard() {
       {step === "capture" && (
         <div className="mt-6 animate-fade-up">
           <div className="card p-5">
+            <p className="label-evidence text-[var(--text-muted)] mb-2">Check-in</p>
             <h2 className="text-heading text-[18px] text-[var(--text-primary)] mb-1">
-              New Check-in
+              An honest look.
             </h2>
             <p className="text-[13px] text-[var(--text-tertiary)] mb-4">
-              Take or upload a photo of the area you want guidance on. Crop
-              close to the affected area — no need to include your full face.
+              Take or upload a photo of the area you want guidance on. The camera
+              and your answers work together — nothing to hide.
             </p>
 
             {previewUrl ? (

@@ -160,14 +160,14 @@ export default function RealityCheckPage() {
           {step === "spot" && (
             <>
               <div className="mb-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)] mb-2">
-                  Today&apos;s Reality Check
+                <p className="label-evidence text-[var(--text-muted)] mb-2">
+                  Daily reality check
                 </p>
                 <h1 className="text-display text-[28px] text-[var(--text-primary)] mb-2">
-                  Spot the edits.
+                  Find what&apos;s hidden.
                 </h1>
                 <p className="text-[14px] text-[var(--text-secondary)]">
-                  This is a <span className="font-semibold text-[var(--text-primary)]">{scenario.label}</span>. How many edits do you think were made before it posted?
+                  This is a <span className="font-semibold text-[var(--text-primary)]">{scenario.label}</span>. How many edits were hidden before it was posted?
                 </p>
               </div>
 
@@ -209,7 +209,7 @@ export default function RealityCheckPage() {
               </div>
 
               <button onClick={handleReveal} className="w-full btn-primary py-4 text-[16px]">
-                See the answer
+                Reveal what&apos;s hidden
               </button>
             </>
           )}
@@ -217,29 +217,29 @@ export default function RealityCheckPage() {
           {step === "reveal" && imgSrc && (
             <>
               <div className="mb-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)] mb-2">Result</p>
+                <p className="label-evidence text-[var(--text-muted)] mb-2">Revealed</p>
                 <h2 className="text-display text-[28px] text-[var(--text-primary)] mb-1">
                   {Math.abs(guess - scenario.edits) <= 1
-                    ? "Close."
+                    ? "You saw through it."
                     : guess < scenario.edits
-                    ? "More than you thought."
+                    ? "They hid more than you thought."
                     : "You overestimated."}
                 </h2>
                 <p className="text-[14px] text-[var(--text-secondary)]">
-                  You guessed <strong>{guess}</strong>. Actual: <strong>{scenario.edits} edits</strong>.
+                  You guessed <strong>{guess}</strong>. Hidden: <strong>{scenario.edits} edits</strong>.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-5">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] mb-1.5 px-1">Real</p>
+                  <p className="label-evidence text-[var(--accent)] mb-1.5 px-1">Truth</p>
                   <div className="card-elevated overflow-hidden rounded-[14px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={imgSrc} alt="original" className="w-full aspect-[4/5] object-cover" />
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--coral)] mb-1.5 px-1">Filtered</p>
+                  <p className="label-evidence text-[var(--coral)] mb-1.5 px-1">Illusion</p>
                   <div className="card-elevated overflow-hidden rounded-[14px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -253,8 +253,8 @@ export default function RealityCheckPage() {
               </div>
 
               <div className="rounded-[12px] bg-[var(--bg-secondary)] px-4 py-3 mb-4">
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)] mb-1.5">
-                  What was changed
+                <p className="label-evidence text-[var(--text-muted)] mb-1.5">
+                  What was hidden
                 </p>
                 <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">{scenario.what}</p>
               </div>

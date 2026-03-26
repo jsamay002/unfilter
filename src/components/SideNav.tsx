@@ -51,12 +51,11 @@ export function SideNav({ isOpen }: SideNavProps) {
   if (!isOpen) return null;
 
   return (
-    <aside className="flex flex-col w-[220px] shrink-0 border-r border-[var(--border-light)] bg-[var(--bg-primary)] sticky top-[52px] h-[calc(100vh-52px)] overflow-y-auto">
+    <aside className="flex flex-col w-[220px] shrink-0 border-r border-[var(--border-light)] bg-[var(--bg-primary)] sticky top-[48px] h-[calc(100vh-48px)] overflow-y-auto">
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 pt-3 pb-2">
+      <nav className="flex-1 px-2.5 pt-4 pb-2">
         {/* Primary */}
-        <div className="mb-1">
+        <div className="mb-2">
           {PRIMARY.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} />
           ))}
@@ -65,7 +64,7 @@ export function SideNav({ isOpen }: SideNavProps) {
         <Divider />
 
         {/* Your Routine */}
-        <div className="mb-1">
+        <div className="mb-2">
           <SectionLabel text="Your Routine" />
           {YOUR_ROUTINE.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} />
@@ -75,7 +74,7 @@ export function SideNav({ isOpen }: SideNavProps) {
         <Divider />
 
         {/* Learn */}
-        <div className="mb-1">
+        <div className="mb-2">
           <SectionLabel text="Learn" />
           {LEARN.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} />
@@ -84,18 +83,16 @@ export function SideNav({ isOpen }: SideNavProps) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-3 pb-4 space-y-1.5 border-t border-[var(--border-light)] pt-3">
+      <div className="px-2.5 pb-4 pt-3 border-t border-[var(--border-light)]">
         <NavLink
           item={{ href: "/settings", label: "Settings", icon: IconSettings }}
           pathname={pathname}
         />
 
-        {/* Privacy badge */}
-        <div className="mx-1 rounded-[10px] border border-[var(--accent-light)] bg-[var(--accent-lighter)] px-3 py-2">
-          <div className="flex items-center gap-2">
-            <IconShield size={13} className="text-[var(--accent)] shrink-0" />
-            <p className="text-[11px] font-medium text-[var(--accent-dark)]">100% On-Device</p>
-          </div>
+        {/* Theme badge */}
+        <div className="flex items-center gap-2 px-3 mt-3">
+          <IconShield size={11} className="text-[var(--accent)] shrink-0" />
+          <p className="text-[10px] text-[var(--text-muted)]">Nothing to hide.</p>
         </div>
       </div>
     </aside>
@@ -108,15 +105,18 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   return (
     <Link
       href={item.href}
-      className={`flex items-center gap-3 rounded-[9px] px-3 py-2 text-[13px] font-medium transition-all ${
+      className={`relative flex items-center gap-2.5 rounded-[8px] px-3 py-[7px] text-[13px] font-medium transition-all duration-150 ${
         active
-          ? "bg-[var(--accent-light)] text-[var(--accent-dark)]"
+          ? "bg-[var(--accent-light)] text-[var(--accent-dark)] font-semibold"
           : "text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
       }`}
     >
+      {active && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full bg-[var(--accent)] transition-all" />
+      )}
       <Icon
-        size={16}
-        className={active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}
+        size={15}
+        className={`transition-colors duration-150 ${active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}`}
       />
       <span>{item.label}</span>
     </Link>

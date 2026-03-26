@@ -198,19 +198,19 @@ function getSliderMessage(key: CategoryKey, value: number): SliderMessage | null
 
 const GUIDED_OVERLAYS: Partial<Record<GuidedStep, { title: string; body: string; cta: string }>> = {
   reveal: {
-    title: "This is what TikTok does automatically.",
-    body: "We just applied the same techniques that Snapchat, TikTok, and Instagram use — often before you even choose a filter. Drag the divider to compare.",
-    cta: "What changed?",
+    title: "This is what they're hiding from you.",
+    body: "We just applied the same techniques that Snapchat, TikTok, and Instagram use — often before you even choose a filter. Drag the divider to see truth vs illusion.",
+    cta: "What did they change?",
   },
   "explain-1": {
-    title: "4 invisible manipulations.",
-    body: "Pimples and pores erased (Snapchat does this by default). Face reshaped (TikTok's \"Enhance\" mode). Lighting faked (Instagram's signature). Makeup painted on digitally (TikTok's \"Bold Glamour\").",
+    title: "4 things they hid.",
+    body: "Pimples and pores erased (Snapchat hides these by default). Face reshaped (TikTok's \"Enhance\" mode). Lighting faked (Instagram's signature). Makeup painted on digitally (TikTok's \"Bold Glamour\").",
     cta: "Why does this matter?",
   },
   "explain-2": {
-    title: "You were already real.",
-    body: "Billions of these filtered photos train your brain to see normal skin as flawed. Every platform profits from making you feel like you need a filter. Understanding the trick is the first step.",
-    cta: "See your distortion score",
+    title: "Your skin had nothing to hide.",
+    body: "Billions of filtered photos train your brain to see normal skin as flawed. Every platform profits from making you feel like you need a filter. Seeing the trick is how you break free.",
+    cta: "See distortion score",
   },
 };
 
@@ -651,17 +651,18 @@ export default function DistortionLabPage() {
       <OnboardingGate>
         <AppShell>
           <div className="mx-auto max-w-lg flex flex-col items-center justify-center" style={{ minHeight: "60vh" }}>
-            <div className="text-center animate-fade-up">
-              <h1 className="text-display text-[clamp(28px,5vw,40px)] text-[var(--text-primary)] mb-3">
-                See what filters<br />really do.
+            <div className="text-center animate-reveal">
+              <p className="label-evidence text-[var(--text-muted)] mb-4">Distortion Lab</p>
+              <h1 className="text-display text-[clamp(28px,5vw,42px)] text-[var(--text-primary)] mb-3 leading-[1.05]">
+                See what they&apos;re<br /><span className="text-editorial">hiding.</span>
               </h1>
-              <p className="text-[15px] text-[var(--text-secondary)] mb-8 max-w-sm mx-auto">
-                Upload a photo and we&apos;ll show you exactly how a beauty filter
-                changes it — step by step.
+              <p className="text-[14px] text-[var(--text-tertiary)] mb-10 max-w-sm mx-auto leading-relaxed">
+                Upload a photo and we&apos;ll show you exactly what beauty filters
+                hide — technique by technique, nothing held back.
               </p>
 
-              <label className="btn-primary cursor-pointer text-[16px] !py-4 !px-8 inline-flex items-center gap-2">
-                <IconCamera size={20} />
+              <label className="btn-primary cursor-pointer text-[15px] !py-4 !px-8 inline-flex items-center gap-2.5">
+                <IconCamera size={18} />
                 Upload a Photo
                 <input type="file" accept="image/*" capture="user" className="sr-only" onChange={handleFile} />
               </label>
@@ -710,15 +711,13 @@ export default function DistortionLabPage() {
         </svg>
 
         <div className="mx-auto max-w-6xl">
-          {/* Header — compact when in guided mode */}
+          {/* Header — precise, clinical */}
           {showControls && (
-            <header className="mb-6 animate-fade-up">
-              <h1 className="text-display text-[clamp(22px,4vw,32px)] text-[var(--text-primary)]">
-                Distortion Lab
+            <header className="mb-6 animate-reveal">
+              <p className="label-evidence text-[var(--text-muted)] mb-2">Distortion Lab</p>
+              <h1 className="text-display text-[clamp(22px,4vw,30px)] text-[var(--text-primary)]">
+                Nothing hidden here.
               </h1>
-              <p className="mt-1 text-[14px] text-[var(--text-tertiary)]">
-                Every beauty filter is just a combination of simple tricks.
-              </p>
             </header>
           )}
 
@@ -806,22 +805,22 @@ export default function DistortionLabPage() {
                         </svg>
                       </div>
                     </div>
-                    <span className="absolute top-3 left-3 rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">Real</span>
-                    <span className="absolute top-3 right-3 rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">Filtered</span>
+                    <span className="absolute top-3 left-3 rounded-[6px] bg-[var(--accent-dark)]/80 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur-sm">Truth</span>
+                    <span className="absolute top-3 right-3 rounded-[6px] bg-[var(--coral)]/70 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur-sm">Illusion</span>
                   </div>
                 )}
 
                 {showControls && compareMode === "side-by-side" && (
                   <div className="grid grid-cols-2 gap-px bg-[var(--border-light)]">
                     <div className="bg-[var(--bg-card)]">
-                      <p className="px-4 pt-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--accent)]">Real Skin</p>
+                      <p className="px-4 pt-3 pb-2 label-evidence text-[var(--accent)]">Truth</p>
                       <div className="aspect-[4/5] overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photo!} alt="Original" className="h-full w-full object-cover" />
                       </div>
                     </div>
                     <div className="bg-[var(--bg-card)]">
-                      <p className="px-4 pt-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--coral)]">Filtered</p>
+                      <p className="px-4 pt-3 pb-2 label-evidence text-[var(--coral)]">Illusion</p>
                       <div className="aspect-[4/5] overflow-hidden">
                         <div className="relative h-full w-full">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -928,7 +927,7 @@ export default function DistortionLabPage() {
               <div className="space-y-4 animate-fade-up">
                 {/* Platform Presets */}
                 <div className="card p-4">
-                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">What each platform does</p>
+                  <p className="mb-3 label-evidence text-[var(--text-muted)]">Platform techniques</p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {PRESETS.map((p) => {
                       const isActive = CATEGORY_ORDER.every((k) => state[k] === p.state[k]);
@@ -962,7 +961,7 @@ export default function DistortionLabPage() {
 
                 {/* Sliders */}
                 <div className="card p-4">
-                  <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">Distortion Controls</p>
+                  <p className="mb-4 label-evidence text-[var(--text-muted)]">Manipulation controls</p>
                   <div className="space-y-5">
                     {CATEGORY_ORDER.map((key) => {
                       const ed = EDUCATION[key];
@@ -1028,7 +1027,7 @@ export default function DistortionLabPage() {
                 {/* Distortion Meter */}
                 <div className="card p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">Distortion Meter</p>
+                    <p className="label-evidence text-[var(--text-muted)]">Distortion level</p>
                     <span className="text-[14px] font-bold" style={{ color: LEVEL_COLORS[distortion.level] }}>{distortion.level}</span>
                   </div>
                   <div className="mb-3 h-2 w-full rounded-full bg-[var(--warm-300)] overflow-hidden">
@@ -1048,8 +1047,8 @@ export default function DistortionLabPage() {
                 {/* What the filter did — teen-friendly stats */}
                 {retouchStats && retouchStats.blemishesRemoved + retouchStats.porePixelsSmoothed + retouchStats.underEyeRegionsFixed > 0 && (
                   <div className="card p-4 animate-fade-up">
-                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--coral)]">
-                      What the filter just did to your face
+                    <p className="mb-3 label-evidence text-[var(--coral)]">
+                      What the filter erased
                     </p>
                     <div className="space-y-2">
                       {retouchStats.blemishesRemoved > 0 && (
@@ -1121,17 +1120,17 @@ export default function DistortionLabPage() {
                   </div>
                 </div>
 
-                {/* What you just saw */}
+                {/* What was hidden */}
                 <div className="card p-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)] mb-2">What you just saw</p>
+                  <p className="label-evidence text-[var(--text-muted)] mb-2">What was hidden</p>
                   <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mb-4">
                     {distortion.score <= 5
-                      ? "No distortions applied. This is what real skin actually looks like."
+                      ? "Nothing hidden. This is real skin — your skin has nothing to hide."
                       : distortion.score <= 25
-                      ? "Even lightly edited images can shift your perception over time."
+                      ? "Subtle changes. Most people wouldn't notice — but your brain does over time."
                       : distortion.score <= 55
-                      ? "This level of editing is typical of most lifestyle photos you see daily."
-                      : "Heavy editing. This image looks nothing like the original."}
+                      ? "This is what most photos you scroll past look like. The real version was hidden from you."
+                      : "Heavy manipulation. Almost nothing in this image is real anymore."}
                   </p>
 
                   <div className="space-y-2">
@@ -1181,7 +1180,7 @@ export default function DistortionLabPage() {
           {showControls && (
             <section className="mt-10 mb-8 animate-fade-up stagger-3">
               <div className="h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-8" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-5">How platforms manipulate your photos</p>
+              <p className="label-evidence text-[var(--text-muted)] mb-5">How platforms manipulate your photos</p>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {CATEGORY_ORDER.map((key) => (
                   <div key={key} className="card p-4">
