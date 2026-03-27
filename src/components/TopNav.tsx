@@ -12,6 +12,7 @@ import {
   IconHelp,
   IconSettings,
   IconSparkle,
+  IconSearch,
   IconX,
 } from "@/components/icons";
 
@@ -20,6 +21,7 @@ import {
 const PRIMARY = [
   { href: "/", label: "Home", icon: IconHome },
   { href: "/lab", label: "Distortion Lab", icon: IconCamera },
+  { href: "/detector", label: "Filter Detector", icon: IconSearch },
 ];
 
 const YOUR_ROUTINE = [
