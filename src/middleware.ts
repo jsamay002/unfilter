@@ -40,6 +40,17 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Root route is dual-purpose:
+  // - signed-out visitors see the marketing landing page
+  // - signed-in users continue into the app home
+  if (pathname === "/") {
+    const session = request.cookies.get("unfilter_session");
+
+    if (!session?.value) {
+      return NextResponse.redirect(new URL("/landing", request.url));
+    }
+  }
+
   // Allow public paths
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
