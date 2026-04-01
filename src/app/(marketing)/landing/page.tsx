@@ -119,7 +119,6 @@ export default function LandingPage() {
               data-aos="fade-up"
               className="mb-5 text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--coral)]"
             >
-              Built for the Congressional App Challenge
             </p>
 
             <h1
@@ -363,7 +362,6 @@ export default function LandingPage() {
           className="mx-auto max-w-4xl rounded-[28px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--bg-secondary),var(--bg-primary))] px-6 py-10 text-center md:px-10"
         >
           <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
-            Built for the Congressional App Challenge
           </p>
           <h2 className="text-display text-[clamp(30px,4.5vw,46px)] leading-[1.03] text-[var(--text-primary)]">
             A teen-built app about <MarkedWord style="brush">truth</MarkedWord>,

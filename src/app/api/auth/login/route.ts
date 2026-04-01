@@ -3,17 +3,12 @@ import { findUserByEmail, getAccountLockRemaining, recordFailedLogin, resetFaile
 import { verifyPassword, signToken, hashPassword } from "@/backend/auth";
 import { rateLimit, checkOrigin } from "@/backend/security";
 
-// Pre-computed dummy hash so bcrypt.compare always runs (timing-safe)
+// pre-compute a dummy hash for non existent users for preventing timing attacks
 let DUMMY_HASH: string | null = null;
 async function getDummyHash() {
   if (!DUMMY_HASH) DUMMY_HASH = await hashPassword("timing-safe-dummy-password");
   return DUMMY_HASH;
 }
-
-/*  POST /api/auth/login
-    Body: { email, password }
-    Security: rate limited, CSRF, timing-safe, account lockout
-*/
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,11 +16,11 @@ export async function POST(req: NextRequest) {
     if (!checkOrigin(req)) {
       return NextResponse.json(
         { ok: false, errors: ["Request blocked."] },
-        { status: 403 },
+        { status: 403},
       );
     }
 
-    // Rate limit: 10 login attempts per IP per 15 minutes
+    //rate limit-10 login attempts per 15 minutes per IP
     const rl = rateLimit("login", 10, 15 * 60, req);
     if (!rl.allowed) {
       return NextResponse.json(
@@ -40,7 +35,7 @@ export async function POST(req: NextRequest) {
     if (!email || !password) {
       return NextResponse.json(
         { ok: false, errors: ["Email and password are required."] },
-        { status: 400 },
+        { status: 400},
       );
     }
 
