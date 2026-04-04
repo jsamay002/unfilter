@@ -52,19 +52,19 @@ const JOURNEY = [
     step: "01",
     title: "See how digital beauty standards get made",
     body:
-      "Start with the distortion tools to make the invisible visible. Users can see the editing tricks behind the images they compare themselves to every day.",
+      "Start with the distortion tools to make the invisible visible -- see the editing tricks behind the images teens compare themselves to every day.",
   },
   {
     step: "02",
     title: "Replace comparison with reflection",
     body:
-      "Move into honest skin check-ins, educational guidance, and routine safety so the app becomes a support system with context and care.",
+      "Honest skin check-ins, educational guidance, and routine safety turn the app into a support system built on context and care.",
   },
   {
     step: "03",
     title: "Track truth over time",
     body:
-      "The journal and routine flow turn isolated insecurity into long-term awareness: what changed, what helped, and what stayed real.",
+      "The journal and routine flow turn isolated insecurity into long-term awareness -- what changed, what helped, and what stayed real.",
   },
 ];
 
@@ -119,6 +119,7 @@ export default function LandingPage() {
               data-aos="fade-up"
               className="mb-5 text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--coral)]"
             >
+              Built by a teen, for teens
             </p>
 
             <h1
@@ -159,7 +160,7 @@ export default function LandingPage() {
                 href="/login"
                 className="inline-flex items-center justify-center rounded-[14px] border border-[var(--border)] px-6 py-3.5 text-[15px] font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-secondary)]"
               >
-                Open the App
+                Already have an account? Sign in
               </Link>
             </div>
 
@@ -181,6 +182,9 @@ export default function LandingPage() {
               className="mt-6 flex items-center gap-3 text-[var(--text-tertiary)]"
             >
               <SmileyStarDoodle />
+              <p className="text-[12px] leading-relaxed">
+                Privacy-first skin literacy. No cloud uploads, no diagnosis, no shame.
+              </p>
             </div>
           </div>
 
@@ -362,6 +366,7 @@ export default function LandingPage() {
           className="mx-auto max-w-4xl rounded-[28px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--bg-secondary),var(--bg-primary))] px-6 py-10 text-center md:px-10"
         >
           <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+            Congressional App Challenge 2026
           </p>
           <h2 className="text-display text-[clamp(30px,4.5vw,46px)] leading-[1.03] text-[var(--text-primary)]">
             A teen-built app about <MarkedWord style="brush">truth</MarkedWord>,
@@ -391,7 +396,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-[var(--border-light)] px-6 py-6">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 text-[11px] text-[var(--text-muted)] sm:flex-row sm:items-center sm:justify-between">
-          <p>Unfilter · Privacy-first skin literacy for teens</p>
+          <p>Unfilter · Privacy-first skin literacy for teens · Congressional App Challenge 2026</p>
           <p>Educational guidance only · Not medical advice</p>
         </div>
       </footer>
@@ -700,29 +705,3 @@ function MetricCard({
   );
 }
 
-function HandDrawnUnderline({ color = "coral" }: { color?: "coral" | "accent" }) {
-  const stroke = color === "accent" ? "text-[var(--accent)]" : "text-[var(--coral)]";
-
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 160 26"
-      className={`pointer-events-none absolute -bottom-3 left-0 h-[18px] w-[110%] ${stroke}`}
-      fill="none"
-    >
-      <path
-        d="M6 15C36 22 66 20 93 18C113 16 132 12 154 9"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <path
-        d="M18 21C47 24 87 24 148 14"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-    </svg>
-  );
-}

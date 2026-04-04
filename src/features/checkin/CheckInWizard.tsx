@@ -26,6 +26,7 @@ import { ResultsCard } from "@/features/checkin/components/results/ResultsCard";
 import { AnalyzingSpinner } from "@/features/checkin/components/AnalyzingSpinner";
 import { useJournalStore } from "@/features/journal/store";
 import type { JournalEntry } from "@/features/journal/types";
+import { IconCamera, IconShield, IconX } from "@/components/icons";
 
 export default function CheckInWizard() {
   const router = useRouter();
@@ -212,19 +213,22 @@ export default function CheckInWizard() {
                 />
                 <button
                   onClick={handleRetake}
-                  className="absolute top-2 right-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-medium text-[var(--text-secondary)] backdrop-blur shadow-sm hover:bg-white transition"
+                  className="absolute top-2 right-2 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-medium text-[var(--text-secondary)] backdrop-blur shadow-sm hover:bg-white transition flex items-center gap-1"
                 >
-                  ✕ Remove
+                  <IconX size={12} />
+                  Remove
                 </button>
               </div>
             ) : (
               <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--border-hover)] py-14 transition hover:border-[var(--accent)] hover:bg-[var(--warm-100)]">
-                <span className="text-3xl mb-2">📷</span>
+                <div className="icon-container icon-lg icon-sage rounded-full mb-3">
+                  <IconCamera size={28} />
+                </div>
                 <span className="text-[14px] font-medium text-[var(--text-secondary)]">
                   Tap to take or upload a photo
                 </span>
                 <span className="text-[12px] text-[var(--text-muted)] mt-1">
-                  EXIF data is stripped · stays on your device
+                  EXIF data is stripped -- stays on your device
                 </span>
                 <input
                   type="file"
@@ -237,7 +241,7 @@ export default function CheckInWizard() {
             )}
 
             <div className="mt-3 flex items-center gap-2 text-[12px] text-[var(--text-muted)]">
-              <span>🔒</span>
+              <IconShield size={12} className="shrink-0" />
               <span>Analyzed on-device. Never uploaded anywhere.</span>
             </div>
           </div>
@@ -315,31 +319,37 @@ function StepBar({ current }: { current: CheckInStep }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
 
   return (
-    <div className="flex items-center gap-1.5">
-      {STEPS.map((s, i) => {
-        const isActive = i === currentIdx;
-        const isDone = i < currentIdx;
-        return (
-          <div key={s.key} className="flex-1">
-            <div
-              className={`h-[3px] rounded-full transition-all duration-500 ${
-                isDone
-                  ? "bg-[var(--accent-dark)]"
-                  : isActive
-                    ? "bg-[var(--accent)]"
-                    : "bg-[var(--border)]"
-              }`}
-            />
-            <p
-              className={`mt-1 text-center text-[10px] font-semibold ${
-                isActive ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"
-              }`}
-            >
-              {s.label}
-            </p>
-          </div>
-        );
-      })}
+    <div className="card p-3">
+      <div className="flex items-center gap-1.5">
+        {STEPS.map((s, i) => {
+          const isActive = i === currentIdx;
+          const isDone = i < currentIdx;
+          return (
+            <div key={s.key} className="flex-1">
+              <div
+                className={`h-1 rounded-full transition-all duration-500 ${
+                  isDone
+                    ? "bg-[var(--accent-dark)]"
+                    : isActive
+                      ? "bg-[var(--accent)]"
+                      : "bg-[var(--border)]"
+                }`}
+              />
+              <p
+                className={`mt-1.5 text-center text-[10px] font-semibold transition-colors ${
+                  isDone
+                    ? "text-[var(--accent-dark)]"
+                    : isActive
+                      ? "text-[var(--text-primary)]"
+                      : "text-[var(--text-muted)]"
+                }`}
+              >
+                {s.label}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -20,73 +20,73 @@ export interface DayMission {
 export const DAY_MISSIONS: readonly DayMission[] = [
   {
     day: 1,
-    title: "See the distortion",
-    subtitle: "Day 1 · Distortion Simulator",
+    title: "Spot the Edit",
+    subtitle: "Day 1 · Detective Training",
     pillar: "simulator",
     route: "/reset/day/1",
     description:
-      "Take or select a photo (processed locally, never uploaded). Watch as digital smoothing alters what you see — and learn what's really happening.",
-    durationMinutes: 3,
-  },
-  {
-    day: 2,
-    title: "Light & contrast tricks",
-    subtitle: "Day 2 · Lighting Presets",
-    pillar: "simulator",
-    route: "/reset/day/2",
-    description:
-      "See how lighting and tone compression change the same photo dramatically. The skin didn't change — the light did.",
-    durationMinutes: 3,
-  },
-  {
-    day: 3,
-    title: "Your skin today",
-    subtitle: "Day 3 · Journal Check-in",
-    pillar: "journal",
-    route: "/reset/day/3",
-    description:
-      "Capture how your skin looks and feels right now. No filters, no judgment — just an honest record stored only on your device.",
-    durationMinutes: 2,
-  },
-  {
-    day: 4,
-    title: "What's in your routine?",
-    subtitle: "Day 4 · Barrier Risk Scan",
-    pillar: "barrier",
-    route: "/reset/day/4",
-    description:
-      "Enter your current products and get an instant safety score. See if anything is conflicting or putting your skin barrier at risk.",
+      "Train your eye to detect common photo edits — smoothing, reshaping, color grading. Once you see how it works, you can never unsee it.",
     durationMinutes: 4,
   },
   {
-    day: 5,
-    title: "The 72-hour rule",
-    subtitle: "Day 5 · New Product Safety",
+    day: 2,
+    title: "The Filter Effect",
+    subtitle: "Day 2 · Filter Literacy",
+    pillar: "simulator",
+    route: "/reset/day/2",
+    description:
+      "Explore how filters change your perception of skin. Compare filtered vs. natural and discover what's being hidden — and why.",
+    durationMinutes: 4,
+  },
+  {
+    day: 3,
+    title: "Lighting Truth",
+    subtitle: "Day 3 · Lighting Science",
+    pillar: "simulator",
+    route: "/reset/day/3",
+    description:
+      "Learn how lighting dramatically changes how skin looks in photos. The skin stays the same — only the light changes everything.",
+    durationMinutes: 3,
+  },
+  {
+    day: 4,
+    title: "Angle Academy",
+    subtitle: "Day 4 · Perspective Shift",
     pillar: "barrier",
+    route: "/reset/day/4",
+    description:
+      "Discover how camera angles distort facial features. What looks 'wrong' in a photo is often just physics, not your face.",
+    durationMinutes: 3,
+  },
+  {
+    day: 5,
+    title: "Social Media Audit",
+    subtitle: "Day 5 · Feed Reflection",
+    pillar: "journal",
     route: "/reset/day/5",
     description:
-      "Learn why new products need time. Set a watch timer for anything you're introducing so you can track reactions safely.",
-    durationMinutes: 3,
+      "Take a guided look at your social media feed. Reflect on who you follow, what images you see, and how they shape how you feel about your skin.",
+    durationMinutes: 5,
   },
   {
     day: 6,
-    title: "Unfiltered you",
-    subtitle: "Day 6 · Reverse Distortion",
-    pillar: "simulator",
+    title: "Compliment Reframe",
+    subtitle: "Day 6 · Inner Dialogue",
+    pillar: "journal",
     route: "/reset/day/6",
     description:
-      "Start with a heavily filtered version of your photo. Slowly strip away the distortion until you see the real image. That's the real you.",
-    durationMinutes: 3,
+      "Shift from appearance-based to character-based self-talk. Build affirmations that celebrate who you are, not just how you look.",
+    durationMinutes: 4,
   },
   {
     day: 7,
-    title: "Perception Reset complete",
-    subtitle: "Day 7 · Your Summary",
+    title: "Graduation",
+    subtitle: "Day 7 · Your Reset Complete",
     pillar: "graduation",
     route: "/reset/day/7",
     description:
-      "See what you've learned: distortions you spotted, your barrier safety score, journal entries captured — and zero bytes sent to any server.",
-    durationMinutes: 2,
+      "Celebrate completing the Perception Reset. Review what you've learned, make a commitment pledge, and share your achievement.",
+    durationMinutes: 3,
   },
 ] as const;
 

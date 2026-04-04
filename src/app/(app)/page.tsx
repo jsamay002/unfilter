@@ -151,7 +151,7 @@ export default function HomePage() {
                 onClick={() => router.push("/lab?demo=true")}
                 className="sm:w-auto rounded-[14px] border border-[var(--border)] px-5 py-4 text-[13px] font-medium text-[var(--text-secondary)] transition hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] active:scale-[0.98]"
               >
-                Use demo image
+                Try with a demo image
               </button>
             </div>
           </section>
@@ -214,7 +214,7 @@ export default function HomePage() {
                   <Link
                     key={j.step}
                     href={j.href}
-                    className="group relative flex items-center gap-4 rounded-[12px] px-4 py-4 -mx-4 transition-all duration-200 hover:bg-[var(--bg-secondary)] hover-sharpen"
+                    className="group relative flex items-center gap-4 rounded-[12px] px-4 py-5 sm:py-4 -mx-4 transition-all duration-200 hover:bg-[var(--bg-secondary)] hover-sharpen"
                   >
                     {/* Step connector line */}
                     {idx < JOURNEY.length - 1 && (
@@ -261,7 +261,7 @@ export default function HomePage() {
               <p className="label-evidence text-[var(--text-muted)] mb-5">
                 Your data
               </p>
-              <div className="grid grid-cols-4 gap-px rounded-[14px] overflow-hidden surface-truth">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-[14px] overflow-hidden surface-truth">
                 {[
                   { label: "Days Active", value: daysActive },
                   { label: "Lab Runs", value: labStats.total },
@@ -272,15 +272,17 @@ export default function HomePage() {
                     key={label}
                     className="px-4 py-4 bg-[var(--bg-card)] text-center"
                   >
-                    <p className="text-data text-[24px] font-bold text-[var(--text-primary)] leading-none mb-1.5">
+                    <p className="text-data text-[26px] font-bold text-[var(--text-primary)] leading-none mb-2">
                       {value}
                     </p>
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</p>
                   </div>
                 ))}
               </div>
               <p className="mt-3 text-[12px] text-[var(--text-muted)]">
-                {daysActive >= 7
+                {daysActive >= 14
+                  ? "Two weeks of seeing clearly. Real awareness takes root."
+                  : daysActive >= 7
                   ? "One week of seeing clearly."
                   : daysActive >= 3
                   ? "Patterns forming."

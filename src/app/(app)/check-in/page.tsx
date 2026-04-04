@@ -1,10 +1,13 @@
 import { AppShell } from "@/components/AppShell";
+import { OnboardingGate } from "@/components/OnboardingGate";
 import CheckInWizard from "@/features/checkin/CheckInWizard";
 
 export default function CheckInPage() {
   return (
-    <AppShell>
-      <CheckInWizard />
-    </AppShell>
+    <OnboardingGate>
+      <AppShell>
+        <CheckInWizard />
+      </AppShell>
+    </OnboardingGate>
   );
 }

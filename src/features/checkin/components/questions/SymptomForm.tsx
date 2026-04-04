@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SymptomContext } from "../../types";
+import { IconArrowLeft, IconArrowRight } from "@/components/icons";
 
 interface SymptomFormProps {
   onSubmit: (data: SymptomContext) => void;
@@ -26,11 +27,12 @@ export function SymptomForm({ onSubmit, onBack }: SymptomFormProps) {
   ) => setData((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="text-lg font-semibold text-slate-800 mb-1">
-        📝 Quick Context
+    <div className="card-elevated p-5">
+      <p className="label-evidence text-[var(--text-muted)] mb-2">Context</p>
+      <h3 className="text-heading text-[18px] text-[var(--text-primary)] mb-1">
+        Quick Context
       </h3>
-      <p className="text-sm text-slate-500 mb-5">
+      <p className="text-[13px] text-[var(--text-tertiary)] mb-5 leading-relaxed">
         A few questions to give you better guidance. Skip anything you&apos;re
         not sure about.
       </p>
@@ -96,26 +98,26 @@ export function SymptomForm({ onSubmit, onBack }: SymptomFormProps) {
         <Field label="Where on your body is this?">
           <input
             type="text"
-            placeholder="e.g. cheek, forehead, arm…"
+            placeholder="e.g. cheek, forehead, arm..."
             value={data.location}
             onChange={(e) => set("location", e.target.value)}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-light)] bg-[var(--bg-card)] px-3 py-2.5 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
           />
         </Field>
 
         {/* New products */}
-        <Field label="Started any new products recently? (optional)">
+        <Field label="Started any new products recently?" hint="Optional">
           <input
             type="text"
-            placeholder="e.g. new face wash, sunscreen…"
+            placeholder="e.g. new face wash, sunscreen..."
             value={data.newProducts}
             onChange={(e) => set("newProducts", e.target.value)}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+            className="w-full rounded-[10px] border border-[var(--border-light)] bg-[var(--bg-card)] px-3 py-2.5 text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
           />
         </Field>
 
         {/* Stress */}
-        <Field label="Stress level lately? (optional)">
+        <Field label="Stress level lately?" hint="Optional">
           <Pills
             value={data.stressLevel}
             onChange={(v) =>
@@ -134,15 +136,17 @@ export function SymptomForm({ onSubmit, onBack }: SymptomFormProps) {
       <div className="mt-6 flex gap-2">
         <button
           onClick={onBack}
-          className="flex-1 rounded-xl border border-slate-300 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+          className="btn-secondary flex-1 gap-2"
         >
-          ← Back
+          <IconArrowLeft size={14} />
+          Back
         </button>
         <button
           onClick={() => onSubmit(data)}
-          className="flex-1 rounded-xl bg-slate-800 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+          className="btn-primary flex-1 gap-2"
         >
-          Get Guidance →
+          Get Guidance
+          <IconArrowRight size={14} />
         </button>
       </div>
     </div>
@@ -153,15 +157,20 @@ export function SymptomForm({ onSubmit, onBack }: SymptomFormProps) {
 
 function Field({
   label,
+  hint,
   children,
 }: {
   label: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-slate-700">
+      <label className="mb-2 flex items-baseline gap-2 text-[13px] font-medium text-[var(--text-primary)]">
         {label}
+        {hint && (
+          <span className="text-[11px] font-normal text-[var(--text-muted)]">{hint}</span>
+        )}
       </label>
       {children}
     </div>
@@ -184,10 +193,10 @@ function Pills({
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+          className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium transition ${
             value === opt.value
-              ? "bg-slate-800 text-white"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              ? "bg-[var(--accent)] text-white shadow-sm"
+              : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--warm-300)]"
           }`}
         >
           {opt.label}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { CalloutPanel, SectionLabel } from "@/components/ui";
+import { IconAlertTriangle, IconHeart } from "@/components/icons";
 
 export default function HelpPage() {
   const [expandedSection, setExpandedSection] = useState<string | null>(
@@ -28,19 +29,31 @@ export default function HelpPage() {
           </div>
 
           <div className="mb-6 animate-fade-up stagger-1">
-            <div className="card rounded-[var(--radius-md)] p-4">
-              <p className="text-[13px] font-semibold text-[var(--text-primary)] mb-2">
-                Scope of this guide
-              </p>
-              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-                It can explain filter distortion, ingredient interactions, and simpler routines, and help identify when professional care may be needed. It does not diagnose skin conditions.
-              </p>
+            <div className="card-gradient-sage rounded-[var(--radius-md)] px-5 py-4 flex gap-3.5 items-start">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-[var(--accent)] shrink-0 mt-0.5"
+              >
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div>
+                <p className="text-[13px] font-semibold text-[var(--text-primary)] mb-1">
+                  Scope of this guide
+                </p>
+                <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                  It can explain filter distortion, ingredient interactions, and simpler routines, and help identify when professional care may be needed. It does not diagnose skin conditions.
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Urgent banner */}
           <div className="mb-6 animate-fade-up stagger-2">
-            <CalloutPanel icon="🚨" variant="coral">
+            <CalloutPanel icon={<IconAlertTriangle size={18} />} variant="coral">
               <strong>If you feel very unwell right now</strong> — high fever,
               rapidly spreading rash, difficulty breathing, or severe swelling —
               tell a parent or guardian immediately and seek medical attention.
@@ -200,7 +213,7 @@ export default function HelpPage() {
               </div>
 
               <div className="mt-4">
-                <CalloutPanel icon="💛" variant="sage">
+                <CalloutPanel icon={<IconHeart size={18} />} variant="sage">
                   You deserve to have your concerns taken seriously. If the
                   first person you talk to doesn&apos;t help, try someone else.
                   School counselors, other family members, or another trusted
@@ -337,7 +350,9 @@ function AccordionSection({
           />
         </svg>
       </button>
-      {expanded && <div className="px-5 pb-5">{children}</div>}
+      {expanded && (
+        <div className="px-5 pb-5 animate-fade-in">{children}</div>
+      )}
     </div>
   );
 }
@@ -415,7 +430,13 @@ function EscalationStep({
         <p className="text-[12px] text-[var(--text-tertiary)]">
           <strong className="text-[var(--text-secondary)]">Why:</strong> {why}
         </p>
-        <p className="text-[12px] text-[var(--accent)] font-medium">💡 {tip}</p>
+        <p className="text-[12px] text-[var(--accent)] font-medium flex items-start gap-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0 mt-[1px]">
+            <path d="M9 18h6M10 22h4M12 2v1M4.22 4.22l.7.7M1 12h1M4.22 19.78l.7-.7M20.49 4.93l-.71.7M23 12h-1M19.78 19.07l-.7-.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M15 12a3 3 0 11-6 0 5 5 0 016 0z" stroke="currentColor" strokeWidth="1.5"/>
+          </svg>
+          <span>{tip}</span>
+        </p>
       </div>
     </div>
   );

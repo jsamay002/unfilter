@@ -53,6 +53,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [autoDeleteEnabled, setAutoDeleteEnabled] = useState(true);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const contrastEnabled = preferences.contrast === "high";
   const textSizeLabel = useMemo(
@@ -272,12 +273,40 @@ export default function SettingsPage() {
             </button>
             <button
               type="button"
-              onClick={deleteAllLocalData}
+              onClick={() => setShowDeleteConfirm(true)}
               className="rounded-[10px] border border-[var(--coral)]/30 bg-[var(--coral)]/10 px-4 py-2 text-[13px] font-semibold text-[var(--coral)] hover:bg-[var(--coral)]/20"
             >
               Delete My Data
             </button>
           </div>
+
+          {showDeleteConfirm && (
+            <div className="mt-3 rounded-[14px] bg-[var(--coral-light)] border border-[var(--coral)]/20 p-4 animate-fade-up">
+              <p className="text-[14px] font-semibold text-[var(--text-primary)] mb-1">
+                Are you sure?
+              </p>
+              <p className="text-[12px] text-[var(--text-tertiary)] mb-4">
+                This will permanently delete all your journal entries, check-in history, routine data,
+                and preferences stored on this device. This action cannot be undone.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={deleteAllLocalData}
+                  className="rounded-[10px] bg-[var(--coral)] px-4 py-2 text-[13px] font-semibold text-white hover:opacity-90 transition"
+                >
+                  Yes, delete everything
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="rounded-[10px] px-4 py-2 text-[13px] font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Session & Account */}

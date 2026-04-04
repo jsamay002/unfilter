@@ -9,7 +9,18 @@ import {
   type LearnArticle,
   type LearnCategory,
 } from "@/features/learn/content";
-import { ButtonText, SectionLabel } from "@/components/ui";
+import { IconBook, IconArrowLeft } from "@/components/icons";
+import { SectionLabel } from "@/components/ui";
+
+/** Estimate reading time from article content sections */
+function readingTime(article: LearnArticle): string {
+  const words = article.content.reduce(
+    (n, s) => n + s.heading.split(/\s+/).length + s.body.split(/\s+/).length,
+    0
+  );
+  const mins = Math.max(1, Math.round(words / 200));
+  return `${mins} min read`;
+}
 
 export default function LearnPage() {
   const [filter, setFilter] = useState<LearnCategory | "all">("all");
@@ -28,25 +39,31 @@ export default function LearnPage() {
           <div className="mx-auto max-w-3xl">
             <button
               onClick={() => setActiveArticle(null)}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition mb-6"
+              className="flex items-center gap-2 text-[13px] font-medium text-[var(--text-tertiary)] hover:text-[var(--accent-dark)] transition mb-6"
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M9 3L5 7l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Back to Learn Hub
+              <IconArrowLeft size={16} />
+              Back to articles
             </button>
 
             <div className="animate-fade-up">
-              <div className="flex items-center gap-2.5 mb-2">
-                <span className="text-[24px]">{activeArticle.emoji}</span>
+              <div className="flex items-center gap-2.5 mb-3">
+                <span
+                  className={`inline-block h-2.5 w-2.5 rounded-full ${CATEGORY_META[activeArticle.category].color.replace("border-l-", "bg-")}`}
+                />
                 <span className="text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
                   {CATEGORY_META[activeArticle.category].label}
+                </span>
+                <span className="text-[11px] text-[var(--text-muted)]">
+                  &middot;
+                </span>
+                <span className="text-[11px] text-[var(--text-muted)]">
+                  {readingTime(activeArticle)}
                 </span>
               </div>
               <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)] mb-2">
                 {activeArticle.title}
               </h1>
-              <p className="text-[14px] text-[var(--text-tertiary)] leading-relaxed mb-8">
+              <p className="text-[15px] text-[var(--text-tertiary)] leading-relaxed mb-8">
                 {activeArticle.summary}
               </p>
 
@@ -67,9 +84,19 @@ export default function LearnPage() {
               </div>
 
               {/* Disclaimer */}
-              <div className="mt-8 rounded-xl bg-[var(--warm-100)] border border-[var(--warm-300)] px-4 py-3">
-                <p className="text-[11px] text-[var(--text-tertiary)] leading-relaxed">
-                  This content is for educational purposes only and does not
+              <div className="mt-10 card-gradient-sage rounded-[var(--radius-md)] px-5 py-4 flex gap-3.5 items-start">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="text-[var(--accent)] shrink-0 mt-0.5"
+                >
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed">
+                  <strong>Educational only.</strong> This content does not
                   constitute medical advice. Consult a healthcare professional
                   for personalized guidance.
                 </p>
@@ -85,6 +112,17 @@ export default function LearnPage() {
                     #{tag}
                   </span>
                 ))}
+              </div>
+
+              {/* Back to articles bottom link */}
+              <div className="mt-8 pt-6 border-t border-[var(--border-light)]">
+                <button
+                  onClick={() => setActiveArticle(null)}
+                  className="flex items-center gap-2 text-[13px] font-medium text-[var(--accent)] hover:text-[var(--accent-dark)] transition"
+                >
+                  <IconArrowLeft size={14} />
+                  Back to all articles
+                </button>
               </div>
             </div>
           </div>
@@ -114,7 +152,7 @@ export default function LearnPage() {
               active={filter === "all"}
               onClick={() => setFilter("all")}
               label="All"
-              icon="📖"
+              svgIcon={<IconBook size={14} />}
             />
             {(Object.keys(CATEGORY_META) as LearnCategory[]).map((cat) => (
               <FilterPill
@@ -122,7 +160,7 @@ export default function LearnPage() {
                 active={filter === cat}
                 onClick={() => setFilter(cat)}
                 label={CATEGORY_META[cat].label}
-                icon={CATEGORY_META[cat].icon}
+                emoji={CATEGORY_META[cat].icon}
               />
             ))}
           </div>
@@ -139,13 +177,17 @@ export default function LearnPage() {
                   <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left`}
+                    className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left min-h-[100px] flex flex-col justify-between`}
                   >
-                    <span className="text-[20px]">{meta.icon}</span>
-                    <p className="text-[13px] font-semibold text-[var(--text-primary)] mt-2">
-                      {meta.label}
-                    </p>
-                    <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+                    <div>
+                      <p className="text-[14px] font-semibold text-[var(--text-primary)]">
+                        {meta.label}
+                      </p>
+                      <p className="text-[12px] text-[var(--text-tertiary)] mt-1 leading-snug">
+                        {meta.desc}
+                      </p>
+                    </div>
+                    <p className="text-[11px] font-medium text-[var(--text-muted)] mt-2">
                       {count} {count === 1 ? "article" : "articles"}
                     </p>
                   </button>
@@ -165,15 +207,15 @@ export default function LearnPage() {
                 onClick={() => setActiveArticle(article)}
                 className={`w-full card-interactive border-l-[3px] ${CATEGORY_META[article.category].color} p-4 text-left flex gap-3.5 items-start`}
               >
-                <span className="text-[20px] shrink-0 mt-0.5">
-                  {article.emoji}
-                </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-semibold text-[var(--text-primary)]">
                     {article.title}
                   </p>
                   <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5 line-clamp-2">
                     {article.summary}
+                  </p>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
+                    {readingTime(article)}
                   </p>
                 </div>
                 <svg
@@ -194,6 +236,14 @@ export default function LearnPage() {
               </button>
             ))}
           </div>
+
+          {/* Educational disclaimer at bottom of hub */}
+          <div className="mt-8 text-center animate-fade-up stagger-4">
+            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed max-w-sm mx-auto">
+              All content is for educational purposes only and does not
+              constitute medical advice.
+            </p>
+          </div>
         </div>
       </AppShell>
     </OnboardingGate>
@@ -204,12 +254,14 @@ function FilterPill({
   active,
   onClick,
   label,
-  icon,
+  emoji,
+  svgIcon,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
-  icon: string;
+  emoji?: string;
+  svgIcon?: React.ReactNode;
 }) {
   return (
     <button
@@ -220,7 +272,11 @@ function FilterPill({
           : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--warm-300)]"
       }`}
     >
-      <span className="text-[13px]">{icon}</span>
+      {svgIcon ? (
+        <span className="flex items-center">{svgIcon}</span>
+      ) : emoji ? (
+        <span className="text-[13px]">{emoji}</span>
+      ) : null}
       {label}
     </button>
   );

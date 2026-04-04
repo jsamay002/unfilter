@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { OnDeviceBadge } from "@/components/OnDeviceBadge";
-import { IconShield } from "@/components/icons";
+import { IconShield, IconCamera, IconJournal, IconTrendUp } from "@/components/icons";
 import { useJournalStore } from "@/features/journal/store";
 import type { JournalEntry } from "@/features/journal/types";
 
@@ -144,21 +144,21 @@ export default function JournalPage() {
                   ))}
                 </div>
               ) : insightEntries.length === 0 ? (
-                <div className="card-elevated p-6 text-center">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-lighter)] mb-3">
-                    <IconShield size={20} className="text-[var(--accent)]" />
+                <div className="card-elevated p-8 text-center">
+                  <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-lighter)] mb-4">
+                    <IconCamera size={24} className="text-[var(--accent)]" />
                   </div>
-                  <p className="text-[15px] font-semibold text-[var(--text-primary)] mb-1">
+                  <p className="text-heading text-[17px] text-[var(--text-primary)] mb-1">
                     No check-in records yet
                   </p>
-                  <p className="text-[13px] text-[var(--text-tertiary)] mb-4 max-w-sm mx-auto">
-                    Complete a private skin check-in to see your records here. All data stays on this device.
+                  <p className="text-[13px] text-[var(--text-tertiary)] mb-5 max-w-sm mx-auto leading-relaxed">
+                    Complete your first private skin check-in to start building your journal. All data stays on this device.
                   </p>
                   <Link
                     href="/check-in"
-                    className="btn-primary inline-flex px-4 py-2.5 text-[13px]"
+                    className="btn-primary inline-flex px-5 py-2.5 text-[14px]"
                   >
-                    Start Check-In
+                    Start Your First Check-In
                   </Link>
                 </div>
               ) : (
@@ -183,6 +183,7 @@ export default function JournalPage() {
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.1fr_1fr]">
                 {/* Weekly reflection form */}
                 <div className="card-elevated p-4">
+                  <p className="label-evidence text-[var(--text-muted)] mb-1">New Entry</p>
                   <h2 className="mb-3 text-[16px] font-semibold text-[var(--text-primary)]">Weekly Reflection</h2>
 
                   <label className="mb-3 block text-[13px] text-[var(--text-secondary)]">
@@ -256,11 +257,15 @@ export default function JournalPage() {
                 {/* Insights */}
                 <div className="space-y-4">
                   <div className="card p-4">
-                    <h2 className="mb-2 text-[16px] font-semibold text-[var(--text-primary)]">Pattern Insights</h2>
+                    <div className="flex items-center gap-2 mb-3">
+                      <IconTrendUp size={14} className="text-[var(--accent)]" />
+                      <h2 className="text-[16px] font-semibold text-[var(--text-primary)]">Pattern Insights</h2>
+                    </div>
                     <ul className="space-y-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
                       {insights.map((insight) => (
-                        <li key={insight} className="rounded-[10px] bg-[var(--bg-secondary)] px-3 py-2">
-                          {insight}
+                        <li key={insight} className="rounded-[10px] bg-[var(--bg-secondary)] px-3 py-2.5 flex items-start gap-2">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                          <span>{insight}</span>
                         </li>
                       ))}
                     </ul>
@@ -291,13 +296,24 @@ export default function JournalPage() {
                 <h2 className="mb-3 text-[16px] font-semibold text-[var(--text-primary)]">Recent Weekly Entries</h2>
                 <div className="space-y-2">
                   {reflections.length === 0 ? (
-                    <p className="card px-4 py-3 text-[13px] text-[var(--text-tertiary)]">No weekly entries yet.</p>
+                    <div className="card px-4 py-6 text-center">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--warm-200)] mb-2">
+                        <IconJournal size={16} className="text-[var(--text-muted)]" />
+                      </div>
+                      <p className="text-[13px] text-[var(--text-tertiary)]">No weekly entries yet. Fill out the form above to start tracking patterns.</p>
+                    </div>
                   ) : (
                     reflections.map((entry) => (
                       <article key={entry.id} className="card p-4">
                         <div className="mb-1 flex items-center justify-between gap-3">
                           <p className="text-[14px] font-semibold text-[var(--text-primary)]">Week of {entry.weekOf}</p>
-                          <p className="text-[12px] font-semibold text-[var(--accent-dark)]">Confidence {entry.confidence}/10</p>
+                          <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                            entry.confidence >= 7
+                              ? "bg-[var(--accent-lighter)] text-[var(--accent-dark)]"
+                              : entry.confidence >= 4
+                                ? "bg-[var(--gold-light)] text-[var(--gold)]"
+                                : "bg-[var(--coral-light)] text-[var(--coral)]"
+                          }`}>{entry.confidence}/10</span>
                         </div>
                         {entry.routineChange ? (
                           <p className="text-[13px] text-[var(--text-secondary)]"><strong>Routine change:</strong> {entry.routineChange}</p>
@@ -337,6 +353,7 @@ function CheckinRecordCard({
   onToggle: () => void;
   onDelete: () => void;
 }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const date = new Date(entry.timestamp);
   const dateStr = date.toLocaleDateString("en-US", {
     weekday: "short",
@@ -492,13 +509,33 @@ function CheckinRecordCard({
 
           {/* Delete */}
           <div className="pt-2 border-t border-[var(--border-light)]">
-            <button
-              type="button"
-              onClick={onDelete}
-              className="text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition"
-            >
-              Delete this record
-            </button>
+            {confirmDelete ? (
+              <div className="flex items-center gap-3">
+                <p className="text-[11px] text-[var(--coral)] font-medium">Delete permanently?</p>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="rounded-[6px] bg-[var(--coral)] px-2.5 py-1 text-[10px] font-semibold text-white hover:opacity-90 transition"
+                >
+                  Yes, delete
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="text-[11px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition"
+              >
+                Delete this record
+              </button>
+            )}
           </div>
         </div>
       )}

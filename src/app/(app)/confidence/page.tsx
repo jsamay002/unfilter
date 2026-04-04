@@ -10,6 +10,7 @@ import {
   type ConfidenceCategory,
 } from "@/features/confidence/content";
 import { CalloutPanel, SectionLabel } from "@/components/ui";
+import { IconStar, IconCamera } from "@/components/icons";
 
 export default function ConfidencePage() {
   const [filter, setFilter] = useState<ConfidenceCategory | "all">("all");
@@ -47,13 +48,15 @@ export default function ConfidencePage() {
           <div className="mb-6 animate-fade-up stagger-1">
             <SectionLabel>Today&apos;s reminder</SectionLabel>
             <div className="card-elevated p-5 border-l-[3px] border-l-[var(--accent)]">
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="text-[24px]">{dailyCard.emoji}</span>
-                <div>
+              <div className="flex items-start gap-3.5 mb-3">
+                <div className="icon-container icon-sm icon-sage rounded-[10px] mt-0.5">
+                  <IconStar size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
                     Daily card
                   </p>
-                  <h3 className="text-[16px] font-semibold text-[var(--text-primary)]">
+                  <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mt-0.5">
                     {dailyCard.title}
                   </h3>
                 </div>
@@ -65,12 +68,12 @@ export default function ConfidencePage() {
           </div>
 
           {/* Category filter */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-6 animate-fade-up stagger-2">
+          <div className="flex gap-2 overflow-x-auto pb-2 mb-6 animate-fade-up stagger-2 no-scrollbar">
             <FilterChip
               active={filter === "all"}
               onClick={() => setFilter("all")}
               label="All"
-              icon="🌈"
+              svgIcon={<IconStar size={14} />}
             />
             {(Object.keys(CONFIDENCE_CATEGORIES) as ConfidenceCategory[]).map(
               (cat) => (
@@ -79,7 +82,7 @@ export default function ConfidencePage() {
                   active={filter === cat}
                   onClick={() => setFilter(cat)}
                   label={CONFIDENCE_CATEGORIES[cat].label}
-                  icon={CONFIDENCE_CATEGORIES[cat].icon}
+                  emoji={CONFIDENCE_CATEGORIES[cat].icon}
                 />
               )
             )}
@@ -99,14 +102,18 @@ export default function ConfidencePage() {
                   <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left`}
+                    className={`card-interactive border-l-[3px] ${meta.color} p-4 text-left min-h-[100px] flex flex-col justify-between`}
                   >
-                    <span className="text-[20px]">{meta.icon}</span>
-                    <p className="text-[13px] font-semibold text-[var(--text-primary)] mt-2">
-                      {meta.label}
-                    </p>
-                    <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
-                      {meta.desc}
+                    <div>
+                      <p className="text-[14px] font-semibold text-[var(--text-primary)]">
+                        {meta.label}
+                      </p>
+                      <p className="text-[12px] text-[var(--text-tertiary)] mt-1 leading-snug">
+                        {meta.desc}
+                      </p>
+                    </div>
+                    <p className="text-[11px] font-medium text-[var(--text-muted)] mt-2">
+                      {count} {count === 1 ? "card" : "cards"}
                     </p>
                   </button>
                 );
@@ -135,7 +142,7 @@ export default function ConfidencePage() {
 
           {/* Natural camera tip */}
           <div className="mt-8 animate-fade-up stagger-4">
-            <CalloutPanel icon="📷" variant="sage">
+            <CalloutPanel icon={<IconCamera size={18} />} variant="sage">
               <strong>Natural Camera Mode tip:</strong> Next time you take a
               selfie, try this — face a window, hold the phone at eye level,
               and skip any beauty filters. Notice how your skin actually looks
@@ -149,7 +156,7 @@ export default function ConfidencePage() {
   );
 }
 
-/* ---- Card Item — expandable ---- */
+/* ---- Card Item — expandable with smooth transition ---- */
 
 function CardItem({
   card,
@@ -162,21 +169,20 @@ function CardItem({
 }) {
   const meta = CONFIDENCE_CATEGORIES[card.category];
   return (
-    <button
-      onClick={onToggle}
-      className={`w-full text-left card border-l-[3px] ${meta.color} transition-all ${
-        expanded ? "p-5" : "p-4"
-      }`}
+    <div
+      className={`card border-l-[3px] ${meta.color} transition-all duration-200 overflow-hidden`}
     >
-      <div className="flex items-center gap-3">
-        <span className="text-[20px] shrink-0">{card.emoji}</span>
+      <button
+        onClick={onToggle}
+        className="w-full text-left p-4 flex items-center gap-3"
+      >
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-semibold text-[var(--text-primary)]">
             {card.title}
           </p>
           {!expanded && (
             <p className="text-[12px] text-[var(--text-tertiary)] mt-0.5 truncate">
-              {card.content.slice(0, 80)}…
+              {card.content.slice(0, 80)}...
             </p>
           )}
         </div>
@@ -185,25 +191,30 @@ function CardItem({
           height="14"
           viewBox="0 0 14 14"
           fill="none"
-          className={`text-[var(--text-muted)] shrink-0 transition-transform ${
-            expanded ? "rotate-90" : ""
+          className={`text-[var(--text-muted)] shrink-0 transition-transform duration-200 ${
+            expanded ? "rotate-180" : ""
           }`}
         >
           <path
-            d="M5 3l4 4-4 4"
+            d="M3 5l4 4 4-4"
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
-      </div>
+      </button>
       {expanded && (
-        <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.7]">
-          {card.content}
-        </p>
+        <div className="px-4 pb-4 animate-fade-in">
+          <p className="text-[14px] text-[var(--text-secondary)] leading-[1.7]">
+            {card.content}
+          </p>
+          <p className="text-[11px] font-medium text-[var(--text-muted)] mt-3 uppercase tracking-[0.06em]">
+            {meta.label}
+          </p>
+        </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -213,12 +224,14 @@ function FilterChip({
   active,
   onClick,
   label,
-  icon,
+  emoji,
+  svgIcon,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
-  icon: string;
+  emoji?: string;
+  svgIcon?: React.ReactNode;
 }) {
   return (
     <button
@@ -229,7 +242,11 @@ function FilterChip({
           : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--warm-300)]"
       }`}
     >
-      <span className="text-[13px]">{icon}</span>
+      {svgIcon ? (
+        <span className="flex items-center">{svgIcon}</span>
+      ) : emoji ? (
+        <span className="text-[13px]">{emoji}</span>
+      ) : null}
       {label}
     </button>
   );

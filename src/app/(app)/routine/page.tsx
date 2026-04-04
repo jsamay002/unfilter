@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
-import { IconShield } from "@/components/icons";
+import { IconShield, IconDroplet, IconAlertTriangle } from "@/components/icons";
 import {
   type CopilotProduct,
   type ProductCategory,
@@ -338,9 +338,15 @@ export default function BarrierCopilotPage() {
                 </div>
 
                 {products.length === 0 && (
-                  <div className="mt-4 rounded-[10px] bg-[var(--bg-secondary)] px-4 py-6 text-center">
-                    <p className="text-[13px] text-[var(--text-tertiary)]">
-                      Add products to your routine to get safety analysis.
+                  <div className="mt-4 rounded-[12px] bg-[var(--bg-secondary)] px-4 py-8 text-center">
+                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--warm-200)] mb-3">
+                      <IconDroplet size={20} className="text-[var(--text-muted)]" />
+                    </div>
+                    <p className="text-[14px] font-medium text-[var(--text-secondary)] mb-1">
+                      No products yet
+                    </p>
+                    <p className="text-[12px] text-[var(--text-muted)] max-w-xs mx-auto leading-relaxed">
+                      Add products to your routine to get ingredient conflict analysis and safety scoring.
                     </p>
                   </div>
                 )}
@@ -449,9 +455,12 @@ export default function BarrierCopilotPage() {
                       return (
                         <div key={w.id} className={`rounded-[12px] ${style.bg} border ${style.border} p-4`}>
                           <div className="flex items-start gap-3">
-                            <span className={`shrink-0 rounded-full ${style.badge} px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider mt-0.5`}>
-                              {style.label}
-                            </span>
+                            <div className="shrink-0 mt-0.5 flex items-center gap-1.5">
+                              {w.severity === "warning" && <IconAlertTriangle size={12} className="text-[var(--coral)]" />}
+                              <span className={`rounded-full ${style.badge} px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider`}>
+                                {style.label}
+                              </span>
+                            </div>
                             <div className="min-w-0">
                               <h3 className="text-[14px] font-semibold text-[var(--text-primary)]">{w.title}</h3>
                               <p className="mt-1.5 text-[12px] text-[var(--text-secondary)] leading-relaxed">
@@ -502,8 +511,8 @@ export default function BarrierCopilotPage() {
               {/* Learn tab */}
               {activeTab === "learn" && (
                 <div className="space-y-2 animate-fade-up">
-                  <p className="text-[11px] text-[var(--text-muted)] mb-2">
-                    Quick lessons — each takes under 30 seconds.
+                  <p className="text-[11px] text-[var(--text-muted)] mb-3">
+                    Quick lessons -- each takes under 30 seconds. Tap to expand.
                   </p>
                   {FLASHCARDS.map((card) => {
                     const isOpen = expandedFlashcard === card.id;
@@ -644,17 +653,26 @@ function RoutineColumn({
   products: CopilotProduct[];
   onRemove: (id: string) => void;
 }) {
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+
   return (
     <div>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</p>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+        {label}
+        {products.length > 0 && (
+          <span className="ml-1.5 text-[var(--accent)]">({products.length})</span>
+        )}
+      </p>
       <div className="space-y-2">
         {products.length === 0 ? (
-          <div className="rounded-[8px] bg-[var(--bg-secondary)] px-3 py-4 text-center">
-            <p className="text-[11px] text-[var(--text-muted)]">No {slot === "am" ? "morning" : "night"} products</p>
+          <div className="rounded-[10px] border border-dashed border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-5 text-center">
+            <p className="text-[11px] text-[var(--text-muted)]">
+              No {slot === "am" ? "morning" : "night"} products yet
+            </p>
           </div>
         ) : (
           products.map((p) => (
-            <div key={p.id} className="rounded-[10px] border border-[var(--border-light)] bg-[var(--bg-card)] px-3 py-2.5">
+            <div key={p.id} className="card-interactive px-3 py-2.5">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="text-[13px] font-semibold text-[var(--text-primary)] truncate">{p.name}</p>
@@ -679,13 +697,32 @@ function RoutineColumn({
                     </div>
                   )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onRemove(p.id)}
-                  className="shrink-0 text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition mt-0.5"
-                >
-                  Remove
-                </button>
+                {confirmId === p.id ? (
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => { onRemove(p.id); setConfirmId(null); }}
+                      className="rounded-[5px] bg-[var(--coral)] px-2 py-0.5 text-[9px] font-semibold text-white hover:opacity-90 transition"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmId(null)}
+                      className="text-[9px] font-medium text-[var(--text-muted)]"
+                    >
+                      No
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmId(p.id)}
+                    className="shrink-0 text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--coral)] transition mt-0.5"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
           ))
