@@ -123,7 +123,7 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <div className="max-w-3xl animate-fade-up">
+      <div className="max-w-4xl animate-fade-up">
         <div className="mb-8">
           <h1 className="text-display text-[clamp(30px,4vw,42px)] text-[var(--text-primary)] mb-3">Settings</h1>
           <p className="text-[16px] text-[var(--text-secondary)] max-w-xl">

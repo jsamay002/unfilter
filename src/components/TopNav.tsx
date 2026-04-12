@@ -13,31 +13,31 @@ import {
   IconSettings,
   IconSparkle,
   IconSearch,
+  IconFlame,
+  IconUsers,
   IconX,
 } from "@/components/icons";
 
 /* ---------- Navigation structure (mirrors SideNav) ---------- */
 
-const PRIMARY = [
+const MAIN = [
   { href: "/", label: "Home", icon: IconHome },
   { href: "/lab", label: "Distortion Lab", icon: IconCamera },
   { href: "/detector", label: "Filter Detector", icon: IconSearch },
+  { href: "/reality-check", label: "Reality Check", icon: IconFlame },
+  { href: "/check-in", label: "Check-In", icon: IconSparkle },
 ];
 
-const YOUR_ROUTINE = [
-  { href: "/check-in", label: "Check-In", icon: IconSparkle },
+const TOOLS = [
   { href: "/routine", label: "Routine Safety", icon: IconShield },
   { href: "/journal", label: "Journal", icon: IconJournal },
-];
-
-const LEARN = [
-  { href: "/learn", label: "Learn Hub", icon: IconBook },
-  { href: "/help", label: "Skin Guide", icon: IconHelp },
   { href: "/confidence", label: "Confidence", icon: IconSparkle },
 ];
 
-const BOTTOM = [
-  { href: "/settings", label: "Settings", icon: IconSettings },
+const RESOURCES = [
+  { href: "/learn", label: "Learn", icon: IconBook },
+  { href: "/help", label: "Skin Guide", icon: IconHelp },
+  { href: "/community", label: "Trusted Circle", icon: IconUsers },
 ];
 
 export function TopNav() {
@@ -45,8 +45,8 @@ export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <header className="md:hidden sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--bg-elevated)]/85 backdrop-blur-xl">
-      <div className="flex items-center justify-between px-5 py-4">
+    <header className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--bg-elevated)]/85 backdrop-blur-xl">
+      <div className="flex items-center justify-between px-5 py-3.5">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--accent)]">
             <span className="text-white text-[13px] font-bold" style={{ fontFamily: "Fraunces" }}>U</span>
@@ -71,17 +71,21 @@ export function TopNav() {
       </div>
 
       {open && (
-        <nav className="animate-fade-up border-t border-[var(--border-light)] bg-[var(--bg-elevated)] px-5 py-4 space-y-1">
-          {PRIMARY.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
+        <nav className="animate-fade-up border-t border-[var(--border-light)] bg-[var(--bg-elevated)] px-5 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
+          {MAIN.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
 
-          <SectionLabel text="Your Routine" />
-          {YOUR_ROUTINE.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
+          <SectionLabel text="Tools" />
+          {TOOLS.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
 
-          <SectionLabel text="Learn" />
-          {LEARN.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
+          <SectionLabel text="Resources" />
+          {RESOURCES.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
 
           <div className="mx-2 my-2 h-px bg-[var(--border-light)]" />
-          {BOTTOM.map((item) => <MobileLink key={item.href} item={item} pathname={pathname} onClose={() => setOpen(false)} />)}
+          <MobileLink
+            item={{ href: "/settings", label: "Settings", icon: IconSettings }}
+            pathname={pathname}
+            onClose={() => setOpen(false)}
+          />
         </nav>
       )}
     </header>

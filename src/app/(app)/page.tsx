@@ -2,61 +2,38 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { OnboardingGate } from "@/components/OnboardingGate";
-import {
-  IconCamera,
-  IconJournal,
-  IconShield,
-  IconSparkle,
-  IconArrowRight,
-  IconFlame,
-} from "@/components/icons";
 import { useAuthStore } from "@/features/auth/store";
 import { useJournalStore } from "@/features/journal/store";
 import { getStreak, isDoneToday } from "@/features/streak";
+import { getPhotoForDay } from "@/features/reality-check/photos";
+import { IconCamera, IconSparkle, IconShield, IconJournal, IconFlame } from "@/components/icons";
 
 const JOURNEY = [
   {
-    step: 1,
-    label: "Expose",
-    title: "See what they're hiding",
-    desc: "Watch a beauty filter erase pimples, reshape a jaw, and fake lighting — in real time on your photo.",
+    title: "Distortion Lab",
+    body: "See what beauty filters actually change — smoothed pores, reshaped jaws, faked lighting.",
     href: "/lab",
     icon: IconCamera,
-    color: "var(--accent)",
-    bg: "bg-[var(--accent-light)]",
   },
   {
-    step: 2,
-    label: "Honest look",
-    title: "Check in with your real skin",
-    desc: "Take a photo and get an honest, private assessment. The camera validates what you report — no judgment.",
+    title: "Check in with your skin",
+    body: "A private check-in. Your photo never leaves the device. Not a score — a record.",
     href: "/check-in",
     icon: IconSparkle,
-    color: "var(--gold)",
-    bg: "bg-[var(--gold-light)]",
   },
   {
-    step: 3,
-    label: "Ingredients",
-    title: "Products with nothing to hide",
-    desc: "Add your products — the safety copilot flags conflicts, explains the science, and scores your routine.",
+    title: "Routine Safety",
+    body: "Add the products you use. The copilot flags conflicts and explains the chemistry.",
     href: "/routine",
     icon: IconShield,
-    color: "var(--coral)",
-    bg: "bg-[var(--coral-light)]",
   },
   {
-    step: 4,
-    label: "Track",
-    title: "Your real record",
-    desc: "Journal your check-ins, confidence, and routine changes over time. All on-device, all yours.",
+    title: "Journal",
+    body: "Turn check-ins into something you can look back on. All on-device, all yours.",
     href: "/journal",
     icon: IconJournal,
-    color: "var(--amber)",
-    bg: "bg-[var(--gold-light)]",
   },
 ];
 
@@ -71,8 +48,9 @@ function getLabStats(): { total: number; edits: number } {
   }
 }
 
-// rough count of unique days with journal activity
-function daysActiveFromEntries(entries: { createdAt?: number; timestamp?: number }[]) {
+function daysActiveFromEntries(
+  entries: { createdAt?: number; timestamp?: number }[],
+) {
   const seen = new Set<string>();
   entries.forEach((e) => {
     const ts = e.createdAt ?? e.timestamp ?? 0;
@@ -84,16 +62,25 @@ function daysActiveFromEntries(entries: { createdAt?: number; timestamp?: number
 export default function HomePage() {
   const { user } = useAuthStore();
   const { entries, _hasHydrated } = useJournalStore();
-  const router = useRouter();
-  const name = user?.username ?? "there";
+  const name = user?.username ?? "you";
 
   const [streak, setStreak] = useState({ count: 0, done: false });
   const [labStats, setLabStats] = useState({ total: 0, edits: 0 });
+  const [dateLine, setDateLine] = useState("");
+  const [photo] = useState(() => getPhotoForDay());
 
   useEffect(() => {
     const s = getStreak();
     setStreak({ count: s.count, done: isDoneToday() });
     setLabStats(getLabStats());
+    const d = new Date();
+    setDateLine(
+      d.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      }),
+    );
   }, []);
 
   const daysActive = _hasHydrated
@@ -104,203 +91,108 @@ export default function HomePage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-2xl">
+        <div className="max-w-4xl mx-auto pb-20">
 
-          {/* ── Hero — Truth vs Illusion split ── */}
-          <section className="mb-14 animate-reveal">
-            <p className="label-evidence text-[var(--text-muted)] mb-6">
-              Welcome back, {name}
+          {/* Greeting */}
+          <div className="mb-10 animate-fade-up">
+            <p className="text-[13px] font-medium text-[var(--text-tertiary)] mb-2">
+              {dateLine || "\u2014"}
             </p>
-
-            {/* Split visual: sharp text left, blurred/filtered concept right */}
-            <div className="relative mb-10">
-              <h1 className="text-display text-[clamp(34px,6vw,56px)] text-[var(--text-primary)] leading-[1.02] mb-4">
-                Your skin has<br />
-                <span className="text-editorial gradient-text">nothing to hide.</span>
-              </h1>
-              <p className="text-[15px] leading-[1.75] text-[var(--text-tertiary)] max-w-[400px]">
-                Filters hide your real skin. Unfilter exposes how — then helps
-                you understand what&apos;s actually there.
-              </p>
-
-              {/* Illusion fragment — decorative blurred shape suggesting distortion */}
-              <div
-                className="hidden md:block absolute -right-8 top-2 w-[180px] h-[140px] rounded-[24px] opacity-[0.07]"
-                style={{
-                  background: "linear-gradient(135deg, var(--coral) 0%, var(--gold) 100%)",
-                  filter: "blur(40px)",
-                }}
-                aria-hidden="true"
-              />
-            </div>
-
-            {/* CTAs — truth (sharp, bordered) vs illusion (soft, blurred bg) */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => router.push("/lab")}
-                className="group flex-1 flex items-center justify-between rounded-[14px] bg-[var(--accent)] px-6 py-4 text-white btn-primary"
-              >
-                <div className="text-left">
-                  <p className="text-[15px] font-semibold">See what they&apos;re hiding</p>
-                  <p className="text-[11px] text-white/50 mt-0.5">Open the Distortion Lab</p>
-                </div>
-                <IconArrowRight size={16} className="shrink-0 opacity-40 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all" />
-              </button>
-
-              <button
-                onClick={() => router.push("/lab?demo=true")}
-                className="sm:w-auto rounded-[14px] border border-[var(--border)] px-5 py-4 text-[13px] font-medium text-[var(--text-secondary)] transition hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] active:scale-[0.98]"
-              >
-                Try with a demo image
-              </button>
-            </div>
-          </section>
-
-          {/* ── Daily Reality Check — slightly different surface ── */}
-          <section className="mb-10 animate-fade-up stagger-1">
-            <Link
-              href="/reality-check"
-              className={`group flex items-center gap-4 rounded-[14px] px-5 py-4 transition-all ${
-                streak.done
-                  ? "bg-[var(--accent-lighter)] border border-[var(--accent-light)]"
-                  : "bg-[var(--bg-secondary)] hover:bg-[var(--warm-200)]"
-              }`}
-            >
-              <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                  streak.done ? "bg-[var(--accent-light)]" : "bg-[var(--warm-300)]"
-                }`}
-              >
-                <IconFlame
-                  size={18}
-                  className={streak.done ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}
-                />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <p className="text-[14px] font-semibold text-[var(--text-primary)]">
-                    {streak.done ? "Done for today" : "Today's Reality Check"}
-                  </p>
-                  {streak.count > 0 && (
-                    <span className="rounded-full bg-[var(--accent-light)] px-2 py-0.5 text-[10px] font-bold tabular-nums text-[var(--accent)]">
-                      {streak.count}d
-                    </span>
-                  )}
-                </div>
-                <p className="text-[12px] text-[var(--text-tertiary)]">
-                  {streak.done
-                    ? "You found what was hidden."
-                    : "30 seconds — find what's hidden"}
-                </p>
-              </div>
-
-              {!streak.done && (
-                <IconArrowRight size={15} className="shrink-0 text-[var(--text-muted)] opacity-0 group-hover:opacity-70 transition-opacity" />
-              )}
-            </Link>
-          </section>
-
-          {/* ── Journey — progressive reveal, each step peels back a layer ── */}
-          <section className="mb-14 animate-reveal stagger-2">
-            <p className="label-evidence text-[var(--text-muted)] mb-6">
-              Nothing to hide — the journey
-            </p>
-
-            <div className="space-y-0.5">
-              {JOURNEY.map((j, idx) => {
-                const Icon = j.icon;
-                return (
-                  <Link
-                    key={j.step}
-                    href={j.href}
-                    className="group relative flex items-center gap-4 rounded-[12px] px-4 py-5 sm:py-4 -mx-4 transition-all duration-200 hover:bg-[var(--bg-secondary)] hover-sharpen"
-                  >
-                    {/* Step connector line */}
-                    {idx < JOURNEY.length - 1 && (
-                      <div
-                        className="absolute left-[33px] top-[52px] w-px h-[calc(100%-36px)] bg-[var(--border-light)]"
-                        aria-hidden="true"
-                      />
-                    )}
-
-                    {/* Step indicator — numbered, not just an icon */}
-                    <div className="relative z-10 flex flex-col items-center gap-0">
-                      <div
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-200 group-hover:border-current ${j.bg}`}
-                        style={{ color: j.color, borderColor: "var(--border-light)" }}
-                      >
-                        <Icon size={17} />
-                      </div>
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline gap-2 mb-0.5">
-                        <span className="label-evidence text-[var(--text-muted)]">
-                          {j.label}
-                        </span>
-                      </div>
-                      <p className="text-[14px] font-semibold text-[var(--text-primary)] leading-tight">{j.title}</p>
-                      <p className="text-[12px] text-[var(--text-muted)] mt-1 leading-relaxed max-w-[380px]">{j.desc}</p>
-                    </div>
-
-                    <IconArrowRight
-                      size={14}
-                      className="shrink-0 text-[var(--text-muted)] opacity-0 group-hover:opacity-60 transition-opacity"
-                    />
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* ── Progress — clinical precision, truth-side aesthetic ── */}
-          {_hasHydrated && hasActivity && (
-            <section className="mb-14 animate-reveal stagger-3">
-              <div className="section-break" />
-              <p className="label-evidence text-[var(--text-muted)] mb-5">
-                Your data
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-[14px] overflow-hidden surface-truth">
-                {[
-                  { label: "Days Active", value: daysActive },
-                  { label: "Lab Runs", value: labStats.total },
-                  { label: "Check-Ins", value: entries.length },
-                  { label: "Edits Found", value: labStats.edits },
-                ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="px-4 py-4 bg-[var(--bg-card)] text-center"
-                  >
-                    <p className="text-data text-[26px] font-bold text-[var(--text-primary)] leading-none mb-2">
-                      {value}
-                    </p>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">{label}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 text-[12px] text-[var(--text-muted)]">
-                {daysActive >= 14
-                  ? "Two weeks of seeing clearly. Real awareness takes root."
-                  : daysActive >= 7
-                  ? "One week of seeing clearly."
-                  : daysActive >= 3
-                  ? "Patterns forming."
-                  : "Every check-in sharpens your eye."}
-              </p>
-            </section>
-          )}
-
-          {/* ── Privacy — truth badge, grounded ── */}
-          <div className="flex items-center gap-2.5 pb-8 animate-fade-in stagger-3">
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-light)]">
-              <IconShield size={10} className="text-[var(--accent)]" />
-            </div>
-            <p className="text-[11px] text-[var(--text-muted)]">
-              Nothing to hide. All processing on-device. No uploads. Ever.
+            <h1 className="text-display text-[clamp(28px,4.5vw,44px)] text-[var(--text-primary)]">
+              Welcome back, {name}.
+            </h1>
+            <p className="mt-2 text-[17px] text-[var(--text-secondary)]">
+              What are you working on today?
             </p>
           </div>
 
+          {/* Reality check card */}
+          <Link
+            href="/reality-check"
+            className="group block mb-10 animate-fade-up stagger-1"
+            aria-label="Open today's reality check"
+          >
+            <div className="card-interactive overflow-hidden">
+              <div className="relative aspect-[21/9] w-full overflow-hidden bg-[var(--warm-200)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photo.url}
+                  alt={photo.alt}
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.015]"
+                  loading="eager"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <IconFlame size={16} className="text-white/80" />
+                    <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-white/70">
+                      Daily Reality Check
+                    </span>
+                  </div>
+                  <p className="text-white text-[18px] font-semibold">
+                    {streak.done
+                      ? "You've already looked today"
+                      : "A real face. No filter."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Streak / activity summary */}
+          {_hasHydrated && hasActivity && (
+            <div className="card p-5 mb-10 animate-fade-up stagger-2">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px] text-[var(--text-secondary)]">
+                <span>
+                  <span className="font-semibold text-[var(--text-primary)]">{daysActive}</span>{" "}
+                  {daysActive === 1 ? "day" : "days"} active
+                </span>
+                {labStats.edits > 0 && (
+                  <span>
+                    <span className="font-semibold text-[var(--text-primary)]">{labStats.edits}</span>{" "}
+                    edits flagged in lab
+                  </span>
+                )}
+                {streak.count > 1 && (
+                  <span>
+                    <span className="font-semibold text-[var(--text-primary)]">{streak.count}</span>-day
+                    streak
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Feature grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-up stagger-3">
+            {JOURNEY.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.href} href={item.href} className="group">
+                  <div className="card-interactive p-5 h-full">
+                    <div className="flex items-start gap-3.5">
+                      <div className="icon-container icon-sm icon-sage rounded-[10px] mt-0.5 shrink-0">
+                        <Icon size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-[15px] font-semibold text-[var(--text-primary)] mb-1 group-hover:text-[var(--accent-dark)] transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-[13px] leading-[1.6] text-[var(--text-tertiary)]">
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Footer */}
+          <p className="mt-16 text-[12px] text-[var(--text-muted)] text-center">
+            Privacy is part of the product. Nothing leaves your device.
+          </p>
         </div>
       </AppShell>
     </OnboardingGate>

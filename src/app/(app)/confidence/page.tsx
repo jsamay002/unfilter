@@ -33,7 +33,7 @@ export default function ConfidencePage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-6 animate-fade-up">
             <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)]">

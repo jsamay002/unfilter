@@ -98,7 +98,7 @@ export default function JournalPage() {
             <h1 className="mt-2 text-display text-[clamp(28px,4vw,40px)] text-[var(--text-primary)]">
               Confidence & Skin Journal
             </h1>
-            <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[var(--text-secondary)]">
+            <p className="mt-2 max-w-4xl text-[15px] leading-relaxed text-[var(--text-secondary)]">
               Track patterns, not appearance scores. Capture confidence, routine changes, and skin observations week by week.
             </p>
           </header>

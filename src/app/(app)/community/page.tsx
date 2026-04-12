@@ -147,7 +147,7 @@ export default function CommunityPage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-3xl animate-fade-up">
+        <div className="mx-auto max-w-4xl animate-fade-up">
           <PageHeader
             title="Trusted Circle"
             subtitle="Share parts of your skin journey with a small group of people you trust. You control exactly what each person can see."

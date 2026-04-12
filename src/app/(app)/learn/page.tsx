@@ -36,7 +36,7 @@ export default function LearnPage() {
     return (
       <OnboardingGate>
         <AppShell>
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto max-w-4xl">
             <button
               onClick={() => setActiveArticle(null)}
               className="flex items-center gap-2 text-[13px] font-medium text-[var(--text-tertiary)] hover:text-[var(--accent-dark)] transition mb-6"
@@ -135,7 +135,7 @@ export default function LearnPage() {
   return (
     <OnboardingGate>
       <AppShell>
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-6 animate-fade-up">
             <h1 className="text-display text-[clamp(24px,3.5vw,36px)] text-[var(--text-primary)]">
