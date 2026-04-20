@@ -35,11 +35,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: true });
 
       // Shared-device safety: if this is a fresh browser session (no
-      // sessionStorage flag), sign out automatically so a new user
-      // doesn't land on someone else's account.
+      // sessionStorage flag), check if we just arrived from OAuth before
+      // auto-logging out. OAuth redirects set the cookie but not sessionStorage.
       const sessionActive = window.sessionStorage.getItem("unfilter_active");
       if (!sessionActive) {
-        // Clear the server-side cookie
+        const checkRes = await fetch("/api/auth/me").catch(() => null);
+        if (checkRes?.ok) {
+          const checkData = await checkRes.json();
+          if (checkData.ok && checkData.user) {
+            window.sessionStorage.setItem("unfilter_active", "1");
+            set({ user: checkData.user, initialized: true, loading: false });
+            return;
+          }
+        }
         await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
         set({ user: null, initialized: true, loading: false });
         return;
@@ -109,7 +117,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {
-      // Still clear local state even if request fails
+      // clear local state even if request fails
     }
     window.sessionStorage.removeItem("unfilter_active");
     set({ user: null });

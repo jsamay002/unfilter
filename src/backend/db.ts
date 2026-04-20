@@ -61,6 +61,14 @@ function getDb() {
       db.exec(`ALTER TABLE users ADD COLUMN token_version INTEGER DEFAULT 0`);
     } catch { /* column already exists */ }
 
+    // OAuth columns
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN oauth_provider TEXT`);
+    } catch { /* column already exists */ }
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN oauth_provider_id TEXT`);
+    } catch { /* column already exists */ }
+
     // Case-insensitive uniqueness on username. Wrapped in try/catch so an
     // existing DB with two same-letter usernames in different cases doesn't
     // crash startup — the constraint will simply not be added until the
@@ -99,6 +107,8 @@ export interface User {
   reset_token: string | null;
   reset_expires: number | null;
   token_version: number;
+  oauth_provider: string | null;
+  oauth_provider_id: string | null;
   created_at: number;
   updated_at: number;
 }
@@ -120,6 +130,43 @@ export function createUser(
     INSERT INTO users (id, username, email, password_hash, verification_token, verification_expires, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `).run(id, username, email.toLowerCase(), passwordHash, verificationToken, expires, now, now);
+
+  return findUserById(id)!;
+}
+
+export function findOrCreateOAuthUser(
+  email: string,
+  name: string,
+  provider: string,
+  providerId: string,
+): User {
+  const d = getDb();
+  const existing = findUserByEmail(email);
+
+  if (existing) {
+    if (!existing.oauth_provider) {
+      d.prepare(`
+        UPDATE users SET oauth_provider = ?, oauth_provider_id = ?, email_verified = 1, updated_at = ?
+        WHERE id = ?
+      `).run(provider, providerId, Date.now(), existing.id);
+    }
+    return findUserById(existing.id)!;
+  }
+
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  const username = name.replace(/[^a-zA-Z0-9_]/g, "").slice(0, 24) || `user_${id.slice(0, 8)}`;
+
+  let finalUsername = username;
+  let suffix = 1;
+  while (findUserByUsername(finalUsername)) {
+    finalUsername = `${username.slice(0, 20)}_${suffix++}`;
+  }
+
+  d.prepare(`
+    INSERT INTO users (id, username, email, password_hash, email_verified, oauth_provider, oauth_provider_id, created_at, updated_at)
+    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)
+  `).run(id, finalUsername, email.toLowerCase(), "OAUTH_NO_PASSWORD", provider, providerId, now, now);
 
   return findUserById(id)!;
 }

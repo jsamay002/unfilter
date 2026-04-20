@@ -43,6 +43,15 @@ export async function POST(req: NextRequest) {
 
     // Find user — always run bcrypt even if user doesn't exist (timing-safe)
     const user = findUserByEmail(trimmedEmail);
+
+    if (user?.oauth_provider && user.password_hash === "OAUTH_NO_PASSWORD") {
+      await getDummyHash();
+      return NextResponse.json(
+        { ok: false, errors: [`This account uses ${user.oauth_provider === "google" ? "Google" : "Microsoft"} sign-in. Please use the "${user.oauth_provider === "google" ? "Continue with Google" : "Continue with Microsoft"}" button.`] },
+        { status: 401 },
+      );
+    }
+
     const hashToCompare = user?.password_hash ?? await getDummyHash();
 
     // Check account lockout — return same message as invalid credentials

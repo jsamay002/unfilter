@@ -20,6 +20,7 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/api/auth",
+  "/api/oauth",
   "/landing",
   "/onboarding",
 ];
