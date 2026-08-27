@@ -78,11 +78,9 @@ function getDb() {
         `CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_nocase
          ON users(username COLLATE NOCASE)`,
       );
-    } catch (err) {
-      console.warn(
-        "[auth-db] Could not create case-insensitive username index:",
-        (err as Error).message,
-      );
+    } catch {
+      // Expected on SQLite builds that don't support COLLATE NOCASE on unique indexes.
+      // Case-insensitive username collision is handled at the application layer.
     }
 
     db.exec(

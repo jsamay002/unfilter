@@ -19,6 +19,10 @@ import {
   type BlemishRegion,
 } from "@/lib/imaging/retouch";
 
+const ANALYSIS_RESOLUTION = 400;
+const BLEMISH_THRESHOLD = 60;
+const MIN_SKIN_PIXEL_RATIO = 0.05;
+
 /**
  * Run real skin analysis on an image.
  * Returns metrics computed from actual pixel data using CV algorithms.
@@ -32,7 +36,7 @@ export async function runSkinAnalysis(
   if (!ctx) {
     throw new Error("Could not create canvas context for analysis. Please try a different browser.");
   }
-  const maxDim = 400; // balance between accuracy and speed
+  const maxDim = ANALYSIS_RESOLUTION;
   const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
   canvas.width = Math.round(img.width * scale);
   canvas.height = Math.round(img.height * scale);
@@ -52,7 +56,7 @@ export async function runSkinAnalysis(
   const skinCount = skinPixels.length;
 
   // If very few skin pixels found, return low-confidence results
-  if (skinCount < totalPixels * 0.05) {
+  if (skinCount < totalPixels * MIN_SKIN_PIXEL_RATIO) {
     return {
       redness: 0,
       texture: 0,
@@ -69,7 +73,7 @@ export async function runSkinAnalysis(
   const redness = computeSkinRedness(data, skinPixels, width, height);
 
   // Step 3: Blemish detection using flood-fill clustering
-  const blemishes = detectBlemishes(imageData, skinMask, 60);
+  const blemishes = detectBlemishes(imageData, skinMask, BLEMISH_THRESHOLD);
   const spotCount = blemishes.length;
 
   // Step 4: Texture analysis — skin variance (how uneven is the surface)

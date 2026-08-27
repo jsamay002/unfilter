@@ -123,14 +123,7 @@ export async function sendVerificationEmail(
 
   if (!transporter) {
     // Dev mode: log to console
-    console.log("\n╔══════════════════════════════════════════════╗");
-    console.log("║  📧 VERIFICATION EMAIL (dev mode)            ║");
-    console.log("╠══════════════════════════════════════════════╣");
-    console.log(`║  To: ${email}`);
-    console.log(`║  Username: ${username}`);
-    console.log(`║  Verify URL:`);
-    console.log(`║  ${verifyUrl}`);
-    console.log("╚══════════════════════════════════════════════╝\n");
+    console.log(`[dev] Verification email for ${username} <${email}>: ${verifyUrl}`);
     return true;
   }
 
@@ -179,14 +172,7 @@ export async function sendPasswordResetEmail(
   const transporter = getTransporter();
 
   if (!transporter) {
-    console.log("\n╔══════════════════════════════════════════════╗");
-    console.log("║  🔑 PASSWORD RESET EMAIL (dev mode)          ║");
-    console.log("╠══════════════════════════════════════════════╣");
-    console.log(`║  To: ${email}`);
-    console.log(`║  Username: ${username}`);
-    console.log(`║  Reset URL:`);
-    console.log(`║  ${resetUrl}`);
-    console.log("╚══════════════════════════════════════════════╝\n");
+    console.log(`[dev] Password reset for ${username} <${email}>: ${resetUrl}`);
     return true;
   }
 
